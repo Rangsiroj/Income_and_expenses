@@ -678,7 +678,32 @@ canvas#pieChart {
 }
 .onboard-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; }
 
-/* =================== RESPONSIVE =================== */
+/* =================== WALLET MANAGER =================== */
+.wallet-manager-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+.wallet-manager-item:hover { background: rgba(255,255,255,0.08); }
+
+.wallet-manager-item .wm-icon {
+  font-size: 16px; flex-shrink: 0;
+}
+.wallet-manager-item .wm-name {
+  flex: 1; font-size: 14px; color: var(--text-primary);
+}
+.wallet-manager-item input.wm-edit {
+  flex: 1; padding: 6px 10px; font-size: 14px;
+}
+.wm-drag-handle {
+  color: var(--text-muted); cursor: grab; font-size: 14px; padding: 0 4px;
+  user-select: none;
+}
+
 @media (max-width: 600px) {
   .header { padding: 16px 18px 12px; }
   .nav { padding: 0 18px 16px; gap: 4px; }
@@ -826,46 +851,19 @@ canvas#pieChart {
           <!-- Wallet (normal) -->
           <div class="form-group full" id="wallet-normal-row">
             <label>ช่องเงิน</label>
-            <select id="f-wallet">
-              <option value="">-- เลือกช่องเงิน --</option>
-              <option>เงินสด (ใช้จ่าย)</option>
-              <option>เงินสด (เงินเก็บ)</option>
-              <option>กรุงไทย / KTC</option>
-              <option>金融卡 (郵政)</option>
-              <option>SCB / Planet</option>
-              <option>EasyCard (บัตรนกสีเขียว)</option>
-              <option>EasyCard (บัตรนักเรียน)</option>
-            </select>
+            <select id="f-wallet"><option value="">-- เลือกช่องเงิน --</option></select>
           </div>
 
           <!-- Transfer wallets -->
           <div class="transfer-row" id="wallet-transfer-row">
             <div class="form-group">
               <label>จากช่อง</label>
-              <select id="f-wallet-from">
-                <option value="">-- เลือก --</option>
-                <option>เงินสด (ใช้จ่าย)</option>
-                <option>เงินสด (เงินเก็บ)</option>
-                <option>กรุงไทย / KTC</option>
-                <option>金融卡 (郵政)</option>
-                <option>SCB / Planet</option>
-                <option>EasyCard (บัตรนกสีเขียว)</option>
-                <option>EasyCard (บัตรนักเรียน)</option>
-              </select>
+              <select id="f-wallet-from"><option value="">-- เลือก --</option></select>
             </div>
             <div class="transfer-arrow">→</div>
             <div class="form-group">
               <label>ไปช่อง</label>
-              <select id="f-wallet-to">
-                <option value="">-- เลือก --</option>
-                <option>เงินสด (ใช้จ่าย)</option>
-                <option>เงินสด (เงินเก็บ)</option>
-                <option>กรุงไทย / KTC</option>
-                <option>金融卡 (郵政)</option>
-                <option>SCB / Planet</option>
-                <option>EasyCard (บัตรนกสีเขียว)</option>
-                <option>EasyCard (บัตรนักเรียน)</option>
-              </select>
+              <select id="f-wallet-to"><option value="">-- เลือก --</option></select>
             </div>
           </div>
 
@@ -974,6 +972,18 @@ canvas#pieChart {
         <button class="btn btn-primary" style="margin-top:12px" onclick="saveScriptUrl()">บันทึก URL</button>
       </div>
 
+      <!-- WALLET MANAGER -->
+      <div class="card">
+        <div class="card-title">🏦 จัดการช่องเงิน</div>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">เพิ่ม ลบ หรือแก้ไขชื่อช่องเงินได้ตามต้องการ</p>
+        <div id="wallet-manager-list" style="margin-bottom:14px"></div>
+        <div style="display:flex;gap:10px">
+          <input type="text" id="new-wallet-input" placeholder="ชื่อช่องเงินใหม่ เช่น Rabbit Card" style="flex:1">
+          <button class="btn btn-primary" style="width:auto;padding:11px 20px;white-space:nowrap" onclick="addWallet()">+ เพิ่ม</button>
+        </div>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:10px">⚠️ การลบช่องเงินจะไม่กระทบข้อมูลเก่าใน Sheet แต่ช่องนั้นจะหายจากเมนูเลือก</p>
+      </div>
+
       <div class="card">
         <div class="card-title">💰 ยอดเงินตั้งต้น — <span id="settings-month-label"></span></div>
         <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">กรอกยอดเงินที่มีอยู่ ณ ปัจจุบันในแต่ละช่อง</p>
@@ -1015,13 +1025,7 @@ canvas#pieChart {
         </select>
       </div>
       <div class="form-group full"><label>ช่องเงิน</label>
-        <select id="e-wallet">
-          <option value="">--</option>
-          <option>เงินสด (ใช้จ่าย)</option><option>เงินสด (เงินเก็บ)</option>
-          <option>กรุงไทย / KTC</option><option>金融卡 (郵政)</option>
-          <option>SCB / Planet</option><option>EasyCard (บัตรนกสีเขียว)</option>
-          <option>EasyCard (บัตรนักเรียน)</option>
-        </select>
+        <select id="e-wallet"><option value="">--</option></select>
       </div>
       <div class="form-group full"><label>หมวดหมู่</label>
         <select id="e-category">
@@ -1050,10 +1054,26 @@ canvas#pieChart {
 // CONFIG & STATE
 // ==========================================
 const SCRIPT_URL_KEY = 'expense_script_url';
-const WALLETS = [
+const WALLETS_KEY = 'expense_wallets';
+const DEFAULT_WALLETS = [
   'เงินสด (ใช้จ่าย)','เงินสด (เงินเก็บ)','กรุงไทย / KTC',
   '金融卡 (郵政)','SCB / Planet','EasyCard (บัตรนกสีเขียว)','EasyCard (บัตรนักเรียน)'
 ];
+
+function getWallets() {
+  try {
+    const saved = localStorage.getItem(WALLETS_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return [...DEFAULT_WALLETS];
+}
+
+function saveWallets(list) {
+  localStorage.setItem(WALLETS_KEY, JSON.stringify(list));
+}
+
+// Dynamic alias — always reflects current wallet list
+Object.defineProperty(window, 'WALLETS', { get: getWallets });
 const MONTH_NAMES = [
   'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน',
   'พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม',
@@ -1082,6 +1102,8 @@ let state = {
 window.onload = async () => {
   setDefaultDate();
   buildMonthSelector();
+  populateAllWalletSelects();
+  renderWalletManager();
   buildOpeningBalanceForm();
   setType('รายจ่าย', 'expense');
   document.getElementById('settings-month-label').textContent = state.currentMonth;
@@ -1103,6 +1125,7 @@ function setDefaultDate() {
 
 function buildMonthSelector() {
   const sel = document.getElementById('monthSelector');
+  sel.innerHTML = '';
   const cur = new Date().getMonth();
   MONTH_NAMES.forEach((m, i) => {
     const opt = document.createElement('option');
@@ -1112,21 +1135,125 @@ function buildMonthSelector() {
   });
 }
 
+// Populate all wallet <select> elements from current wallet list
+function populateAllWalletSelects() {
+  const wallets = getWallets();
+  const opts = wallets.map(w => `<option>${w}</option>`).join('');
+
+  const fWallet = document.getElementById('f-wallet');
+  const fFrom   = document.getElementById('f-wallet-from');
+  const fTo     = document.getElementById('f-wallet-to');
+  const eWallet = document.getElementById('e-wallet');
+  const fWalletFilter = document.getElementById('filter-wallet');
+
+  if (fWallet) fWallet.innerHTML = `<option value="">-- เลือกช่องเงิน --</option>${opts}`;
+  if (fFrom)   fFrom.innerHTML   = `<option value="">-- เลือก --</option>${opts}`;
+  if (fTo)     fTo.innerHTML     = `<option value="">-- เลือก --</option>${opts}`;
+  if (eWallet) eWallet.innerHTML = `<option value="">--</option>${opts}`;
+  if (fWalletFilter) fWalletFilter.innerHTML = `<option value="">ทุกช่องเงิน</option>${opts}`;
+}
+
 function buildOpeningBalanceForm() {
   const container = document.getElementById('opening-balance-form');
-  container.innerHTML = WALLETS.map(w => `
+  const wallets = getWallets();
+  container.innerHTML = wallets.map(w => `
     <div class="form-group">
       <label>${w}</label>
-      <input type="number" id="ob-${w}" placeholder="0.00" min="0" step="0.01">
+      <input type="number" id="ob-${CSS.escape(w)}" placeholder="0.00" min="0" step="0.01">
     </div>
   `).join('');
 }
+
+// ==========================================
+// WALLET MANAGER
+// ==========================================
+function renderWalletManager() {
+  const wallets = getWallets();
+  const list = document.getElementById('wallet-manager-list');
+  if (!list) return;
+
+  list.innerHTML = wallets.map((w, i) => `
+    <div class="wallet-manager-item" id="wm-item-${i}">
+      <span class="wm-drag-handle" title="ลาก">⠿</span>
+      <span class="wm-icon">🏦</span>
+      <span class="wm-name" id="wm-name-${i}">${w}</span>
+      <button class="btn-icon" onclick="editWalletName(${i})" title="แก้ไขชื่อ">✏️</button>
+      <button class="btn-icon del" onclick="deleteWallet(${i})" title="ลบ">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function addWallet() {
+  const input = document.getElementById('new-wallet-input');
+  const name = input.value.trim();
+  if (!name) { showToast('กรุณากรอกชื่อช่องเงิน', 'error'); return; }
+
+  const wallets = getWallets();
+  if (wallets.includes(name)) { showToast('มีช่องเงินนี้อยู่แล้ว', 'error'); return; }
+
+  wallets.push(name);
+  saveWallets(wallets);
+  input.value = '';
+  renderWalletManager();
+  populateAllWalletSelects();
+  buildOpeningBalanceForm();
+  showToast(`✅ เพิ่ม "${name}" เรียบร้อย`, 'success');
+}
+
+function deleteWallet(index) {
+  const wallets = getWallets();
+  const name = wallets[index];
+  if (!confirm(`ต้องการลบ "${name}" ออกจากเมนูใช่ไหม?\n\n(ข้อมูลเก่าใน Sheet ไม่หาย)`)) return;
+  wallets.splice(index, 1);
+  saveWallets(wallets);
+  renderWalletManager();
+  populateAllWalletSelects();
+  buildOpeningBalanceForm();
+  showToast(`🗑️ ลบ "${name}" เรียบร้อย`, 'success');
+}
+
+function editWalletName(index) {
+  const wallets = getWallets();
+  const item = document.getElementById(`wm-item-${index}`);
+  const nameSpan = document.getElementById(`wm-name-${index}`);
+  const oldName = wallets[index];
+
+  // Replace name span with input
+  const input = document.createElement('input');
+  input.className = 'wm-edit';
+  input.value = oldName;
+  nameSpan.replaceWith(input);
+  input.focus(); input.select();
+
+  // Replace edit button with save button
+  const editBtn = item.querySelector('.btn-icon:not(.del)');
+  editBtn.textContent = '💾';
+  editBtn.onclick = () => saveWalletName(index, input, oldName);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveWalletName(index, input, oldName);
+    if (e.key === 'Escape') renderWalletManager();
+  });
+}
+
+function saveWalletName(index, input, oldName) {
+  const newName = input.value.trim();
+  if (!newName) { showToast('ชื่อต้องไม่ว่าง', 'error'); return; }
+  const wallets = getWallets();
+  if (wallets.includes(newName) && newName !== oldName) { showToast('มีชื่อนี้อยู่แล้ว', 'error'); return; }
+  wallets[index] = newName;
+  saveWallets(wallets);
+  renderWalletManager();
+  populateAllWalletSelects();
+  buildOpeningBalanceForm();
+  showToast(`✅ เปลี่ยนชื่อเป็น "${newName}" เรียบร้อย`, 'success');
+}
+
 
 async function checkFirstTime() {
   const result = await apiCall('getSettings');
   if (!result || !result.success) return;
   const settings = result.settings;
-  const hasBalance = WALLETS.some(w => settings[`opening_${state.currentMonth}_${w}`]);
+  const hasBalance = getWallets().some(w => settings[`opening_${state.currentMonth}_${w}`]);
   if (!hasBalance) {
     document.getElementById('onboarding-notice').style.display = 'block';
   }
@@ -1196,7 +1323,8 @@ function showPage(pageId) {
   document.querySelectorAll('.nav-btn')[idx].classList.add('active');
 
   if (pageId === 'page-overview') renderOverview();
-  if (pageId === 'page-entries') renderEntries();
+  if (pageId === 'page-entries') { populateAllWalletSelects(); renderEntries(); }
+  if (pageId === 'page-settings') { renderWalletManager(); buildOpeningBalanceForm(); }
 }
 
 async function onMonthChange() {
@@ -1269,7 +1397,7 @@ function renderOverview() {
 
   // Wallet cards
   const grid = document.getElementById('wallet-grid');
-  grid.innerHTML = WALLETS.map(w => {
+  grid.innerHTML = getWallets().map(w => {
     const info = s.walletSummary[w] || { balance:0, income:0, expense:0 };
     const cls = info.balance >= 0 ? 'positive' : 'negative';
     return `
@@ -1466,8 +1594,9 @@ function saveScriptUrl() {
 
 async function saveOpeningBalances() {
   const data = {};
-  WALLETS.forEach(w => {
-    const val = document.getElementById(`ob-${w}`)?.value;
+  getWallets().forEach(w => {
+    const el = document.getElementById(`ob-${CSS.escape(w)}`);
+    const val = el?.value;
     if (val) data[`opening_${state.currentMonth}_${w}`] = parseFloat(val);
   });
   const result = await apiCall('saveSettings', data);
