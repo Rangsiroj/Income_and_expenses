@@ -3,1650 +3,1328 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>บัญชีรายรับรายจ่าย</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@300;400;600&display=swap" rel="stylesheet">
+<title>🌸 สมุดบัญชีรายรับรายจ่าย</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Mitr:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --green-deep: #1a3a2a;
-  --green-mid: #2d5a3d;
-  --green-light: #4a8c5c;
-  --green-pale: #7bbf8a;
-  --green-fog: rgba(74,140,92,0.15);
-  --sky-blue: #c8e6f5;
-  --mist: rgba(255,255,255,0.12);
-  --mist-strong: rgba(255,255,255,0.22);
-  --glass: rgba(255,255,255,0.10);
-  --glass-border: rgba(255,255,255,0.18);
-  --text-primary: #f0f7f2;
-  --text-secondary: rgba(240,247,242,0.70);
-  --text-muted: rgba(240,247,242,0.45);
-  --income-color: #a8e6b8;
-  --expense-color: #f4a8a8;
-  --transfer-color: #a8d4f4;
-  --borrow-color: #f4e0a8;
-  --radius: 18px;
-  --radius-sm: 10px;
-  --shadow: 0 8px 32px rgba(0,0,0,0.25);
-  --shadow-sm: 0 2px 12px rgba(0,0,0,0.15);
-}
-
-* { margin:0; padding:0; box-sizing:border-box; }
-
-body {
-  font-family: 'Sarabun', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-  background: #0d1f15;
-  color: var(--text-primary);
-}
-
-/* =================== ANIMATED BACKGROUND =================== */
-.bg-scene {
-  position: fixed; inset: 0; z-index: 0; overflow: hidden;
-}
-
-/* Sky gradient */
-.bg-sky {
-  position: absolute; inset: 0;
-  background: linear-gradient(
-    175deg,
-    #0a1628 0%,
-    #0f2d3d 20%,
-    #1a4a35 50%,
-    #0d2518 100%
-  );
-}
-
-/* Sun */
-.bg-sun {
-  position: absolute;
-  top: 8%; right: 22%;
-  width: 90px; height: 90px;
-  background: radial-gradient(circle, #fff8e1 0%, #ffe082 40%, rgba(255,224,100,0) 70%);
-  border-radius: 50%;
-  box-shadow: 0 0 60px 30px rgba(255,224,100,0.25), 0 0 120px 60px rgba(255,200,50,0.1);
-  animation: sunPulse 8s ease-in-out infinite;
-}
-
-@keyframes sunPulse {
-  0%,100% { transform: scale(1); opacity:0.9; }
-  50% { transform: scale(1.06); opacity:1; }
-}
-
-/* Sun rays */
-.bg-sun::after {
-  content: '';
-  position: absolute; inset: -40px;
-  background: radial-gradient(circle, rgba(255,230,100,0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: sunGlow 4s ease-in-out infinite alternate;
-}
-
-@keyframes sunGlow {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.3); }
-}
-
-/* Mountains - back layer */
-.bg-mountain-back {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 55%;
-}
-
-.bg-mountain-back svg { width:100%; height:100%; }
-
-/* Mountains - mid layer */
-.bg-mountain-mid {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 45%;
-}
-
-/* Mountains - front layer */
-.bg-mountain-front {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 30%;
-}
-
-/* Clouds */
-.cloud {
-  position: absolute;
-  background: rgba(255,255,255,0.12);
-  border-radius: 50px;
-  backdrop-filter: blur(2px);
-}
-
-.cloud::before, .cloud::after {
-  content: '';
-  position: absolute;
-  background: inherit;
-  border-radius: 50%;
-}
-
-.cloud-1 {
-  width: 180px; height: 45px;
-  top: 12%; left: -200px;
-  animation: floatCloud1 55s linear infinite;
-  opacity: 0.7;
-}
-.cloud-1::before { width:80px;height:65px; top:-30px; left:25px; }
-.cloud-1::after  { width:55px;height:50px; top:-22px; left:80px; }
-
-.cloud-2 {
-  width: 130px; height: 32px;
-  top: 22%; left: -150px;
-  animation: floatCloud2 70s linear infinite 15s;
-  opacity: 0.5;
-}
-.cloud-2::before { width:55px;height:48px; top:-22px; left:18px; }
-.cloud-2::after  { width:40px;height:38px; top:-16px; left:60px; }
-
-.cloud-3 {
-  width: 200px; height: 50px;
-  top: 8%; left: -220px;
-  animation: floatCloud3 80s linear infinite 30s;
-  opacity: 0.4;
-}
-.cloud-3::before { width:90px;height:70px; top:-35px; left:30px; }
-.cloud-3::after  { width:65px;height:55px; top:-25px; left:90px; }
-
-.cloud-4 {
-  width: 110px; height: 28px;
-  top: 18%; left: -130px;
-  animation: floatCloud1 90s linear infinite 45s;
-  opacity: 0.35;
-}
-
-@keyframes floatCloud1 { from{left:-220px} to{left:110%} }
-@keyframes floatCloud2 { from{left:-180px} to{left:110%} }
-@keyframes floatCloud3 { from{left:-250px} to{left:110%} }
-
-/* Mist at mountain base */
-.bg-mist {
-  position: absolute;
-  bottom: 22%; left: 0; right: 0;
-  height: 120px;
-  background: linear-gradient(to top, rgba(180,220,200,0.12) 0%, transparent 100%);
-  animation: mistDrift 12s ease-in-out infinite alternate;
-}
-
-@keyframes mistDrift {
-  0% { transform: scaleX(1) translateX(0); opacity:0.8; }
-  100% { transform: scaleX(1.02) translateX(8px); opacity:1; }
-}
-
-/* Overlay for readability */
-.bg-overlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(10,22,15,0.2) 0%,
-    rgba(10,22,15,0.1) 50%,
-    rgba(10,22,15,0.55) 100%
-  );
-}
-
-/* =================== LAYOUT =================== */
-.app-wrapper {
-  position: relative; z-index: 1;
-  min-height: 100vh;
-  display: flex; flex-direction: column;
-}
-
-/* =================== HEADER =================== */
-.header {
-  padding: 20px 32px 16px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
-}
-
-.header-logo {
-  display: flex; align-items: center; gap: 12px;
-}
-
-.logo-icon {
-  width: 42px; height: 42px;
-  background: linear-gradient(135deg, var(--green-light), var(--green-pale));
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-  box-shadow: 0 4px 15px rgba(74,140,92,0.4);
-}
-
-.logo-text {
-  font-family: 'Noto Serif Thai', serif;
-  font-size: 18px; font-weight: 600;
-  color: var(--text-primary);
-  line-height: 1.2;
-}
-
-.logo-sub { font-size: 11px; color: var(--text-muted); font-weight: 300; }
-
-.header-month {
-  display: flex; align-items: center; gap: 10px;
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  border-radius: 30px;
-  padding: 8px 16px;
-  backdrop-filter: blur(10px);
-}
-
-.header-month select {
-  background: transparent;
-  border: none; outline: none;
-  color: var(--text-primary);
-  font-family: 'Sarabun', sans-serif;
-  font-size: 14px;
-  cursor: pointer;
-  appearance: none;
-}
-
-.header-month select option { background: #1a3a2a; color: #fff; }
-
-/* =================== NAV =================== */
-.nav {
-  display: flex;
-  gap: 6px;
-  padding: 0 32px 20px;
-}
-
-.nav-btn {
-  padding: 9px 20px;
-  border: 1px solid var(--glass-border);
-  border-radius: 30px;
-  background: var(--glass);
-  color: var(--text-secondary);
-  font-family: 'Sarabun', sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.25s;
-  backdrop-filter: blur(10px);
-}
-
-.nav-btn:hover { background: var(--mist); color: var(--text-primary); }
-.nav-btn.active {
-  background: var(--green-light);
-  border-color: var(--green-pale);
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(74,140,92,0.35);
-}
-
-/* =================== MAIN CONTENT =================== */
-.main { flex: 1; padding: 0 32px 60px; }
-
-.page { display: none; }
-.page.active { display: block; }
-
-/* =================== GLASS CARD =================== */
-.card {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  backdrop-filter: blur(16px);
-  padding: 24px;
-  margin-bottom: 20px;
-  box-shadow: var(--shadow);
-}
-
-.card-title {
-  font-family: 'Noto Serif Thai', serif;
-  font-size: 15px; font-weight: 600;
-  color: var(--green-pale);
-  margin-bottom: 18px;
-  display: flex; align-items: center; gap: 8px;
-}
-
-/* =================== FORM =================== */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.form-group {
-  display: flex; flex-direction: column; gap: 6px;
-}
-
-.form-group.full { grid-column: 1 / -1; }
-
-label {
-  font-size: 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-input, select, textarea {
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: var(--radius-sm);
-  padding: 11px 14px;
-  color: var(--text-primary);
-  font-family: 'Sarabun', sans-serif;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.2s;
-  width: 100%;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--green-pale);
-  background: rgba(255,255,255,0.1);
-  box-shadow: 0 0 0 3px rgba(123,191,138,0.15);
-}
-
-input::placeholder { color: var(--text-muted); }
-select option { background: #1a3a2a; }
-
-.transfer-row {
-  display: none;
-  grid-column: 1 / -1;
-  display: none;
-  gap: 14px;
-}
-.transfer-row.visible {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: end;
-}
-
-.transfer-arrow {
-  display: flex; align-items: center; justify-content: center;
-  color: var(--transfer-color);
-  font-size: 20px;
-  padding-bottom: 11px;
-}
-
-.btn {
-  padding: 13px 28px;
-  border: none; border-radius: var(--radius-sm);
-  font-family: 'Sarabun', sans-serif;
-  font-size: 15px; font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, var(--green-light), var(--green-mid));
-  color: #fff;
-  box-shadow: 0 4px 15px rgba(74,140,92,0.35);
-  width: 100%; margin-top: 6px;
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(74,140,92,0.45); }
-.btn-primary:active { transform: translateY(0); }
-
-.btn-secondary {
-  background: var(--glass);
-  border: 1px solid var(--glass-border);
-  color: var(--text-secondary);
-}
-.btn-danger { background: rgba(220,80,80,0.25); border:1px solid rgba(220,80,80,0.4); color:#f4a8a8; }
-
-/* Type buttons */
-.type-selector {
-  display: flex; gap: 6px; flex-wrap: wrap;
-  grid-column: 1 / -1;
-}
-
-.type-btn {
-  flex: 1; min-width: 90px;
-  padding: 9px 12px;
-  border: 1px solid rgba(255,255,255,0.14);
-  border-radius: 8px;
-  background: rgba(255,255,255,0.05);
-  color: var(--text-secondary);
-  font-family: 'Sarabun', sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-align: center;
-}
-
-.type-btn:hover { background: var(--mist); }
-.type-btn.active-income  { background: rgba(168,230,184,0.2); border-color: var(--income-color); color: var(--income-color); }
-.type-btn.active-expense { background: rgba(244,168,168,0.2); border-color: var(--expense-color); color: var(--expense-color); }
-.type-btn.active-transfer{ background: rgba(168,212,244,0.2); border-color: var(--transfer-color); color: var(--transfer-color); }
-.type-btn.active-borrow  { background: rgba(244,224,168,0.2); border-color: var(--borrow-color); color: var(--borrow-color); }
-.type-btn.active-paydebt { background: rgba(200,180,255,0.2); border-color: #c8b4ff; color: #c8b4ff; }
-.type-btn.active-forget  { background: rgba(200,200,200,0.15); border-color: #aaa; color: #ccc; }
-
-/* =================== OVERVIEW =================== */
-.wallet-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-  margin-bottom: 20px;
-}
-
-.wallet-card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid var(--glass-border);
-  border-radius: 14px;
-  padding: 16px 18px;
-  backdrop-filter: blur(12px);
-  transition: transform 0.2s;
-}
-.wallet-card:hover { transform: translateY(-3px); }
-
-.wallet-name {
-  font-size: 12px; color: var(--text-muted);
-  margin-bottom: 8px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.wallet-balance {
-  font-size: 20px; font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.5px;
-}
-.wallet-balance.positive { color: var(--income-color); }
-.wallet-balance.negative { color: var(--expense-color); }
-
-.wallet-sub {
-  display: flex; gap: 10px;
-  margin-top: 6px;
-  font-size: 11px;
-}
-.wallet-in  { color: var(--income-color); }
-.wallet-out { color: var(--expense-color); }
-
-.summary-total {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.total-card {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid var(--glass-border);
-  border-radius: 14px;
-  padding: 20px 22px;
-  text-align: center;
-}
-
-.total-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-.total-value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
-.total-value.green { color: var(--green-pale); }
-.total-value.red   { color: var(--expense-color); }
-
-/* =================== CHART =================== */
-.chart-container {
-  display: flex; align-items: center; gap: 30px;
-  flex-wrap: wrap;
-}
-
-.chart-wrap {
-  position: relative; width: 200px; height: 200px; flex-shrink: 0;
-}
-
-canvas#pieChart {
-  width: 200px !important; height: 200px !important;
-}
-
-.chart-legend {
-  flex: 1; min-width: 180px;
-}
-
-.legend-item {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 10px;
-}
-
-.legend-dot {
-  width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0;
-}
-.legend-label { font-size: 13px; color: var(--text-secondary); flex: 1; }
-.legend-pct   { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-.legend-amt   { font-size: 11px; color: var(--text-muted); }
-
-/* =================== TABLE =================== */
-.table-controls {
-  display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
-}
-
-.table-controls select, .table-controls input {
-  flex: 1; min-width: 120px;
-  padding: 9px 12px;
-  font-size: 13px;
-}
-
-.entries-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.entries-table th {
-  text-align: left;
-  padding: 10px 12px;
-  color: var(--text-muted);
-  font-weight: 500;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.entries-table td {
-  padding: 12px 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  vertical-align: middle;
-}
-
-.entries-table tr:hover td { background: rgba(255,255,255,0.03); }
-
-.type-badge {
-  padding: 3px 8px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.badge-income   { background: rgba(168,230,184,0.2); color: var(--income-color); }
-.badge-expense  { background: rgba(244,168,168,0.2); color: var(--expense-color); }
-.badge-transfer { background: rgba(168,212,244,0.2); color: var(--transfer-color); }
-.badge-borrow   { background: rgba(244,224,168,0.2); color: var(--borrow-color); }
-.badge-paydebt  { background: rgba(200,180,255,0.2); color: #c8b4ff; }
-.badge-forget   { background: rgba(180,180,180,0.15); color: #bbb; }
-
-.amount-positive { color: var(--income-color); font-weight: 600; }
-.amount-negative { color: var(--expense-color); font-weight: 600; }
-
-.action-btns { display: flex; gap: 6px; }
-.btn-icon {
-  width: 28px; height: 28px;
-  border-radius: 7px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.06);
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
-  transition: all 0.2s;
-}
-.btn-icon:hover { background: var(--mist); color: var(--text-primary); }
-.btn-icon.del:hover { background: rgba(220,80,80,0.2); color: var(--expense-color); }
-
-/* =================== SETTINGS =================== */
-.settings-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.close-month-section {
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
-}
-
-.btn-warning {
-  background: linear-gradient(135deg, #8a6a20, #b08a30);
-  color: #fff;
-  padding: 11px 24px;
-  box-shadow: 0 4px 15px rgba(180,140,50,0.3);
-}
-.btn-warning:hover { transform: translateY(-2px); }
-
-/* =================== MODAL =================== */
-.modal-overlay {
-  display: none;
-  position: fixed; inset: 0; z-index: 100;
-  background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-
-.modal {
-  background: rgba(25,50,35,0.95);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  padding: 28px;
-  width: 90%; max-width: 500px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  backdrop-filter: blur(20px);
-}
-
-.modal-title {
-  font-family: 'Noto Serif Thai', serif;
-  font-size: 17px; font-weight: 600;
-  margin-bottom: 20px;
-  color: var(--green-pale);
-}
-
-.modal-actions {
-  display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end;
-}
-
-/* =================== TOAST =================== */
-.toast {
-  position: fixed;
-  bottom: 30px; right: 30px;
-  z-index: 200;
-  padding: 14px 22px;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 500;
-  backdrop-filter: blur(16px);
-  transform: translateY(80px);
-  opacity: 0;
-  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
-  pointer-events: none;
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast.success { background: rgba(74,140,92,0.9); border:1px solid var(--green-pale); color:#fff; }
-.toast.error   { background: rgba(180,60,60,0.9); border:1px solid #f4a8a8; color:#fff; }
-
-/* =================== LOADING =================== */
-.loading {
-  display: flex; align-items: center; justify-content: center;
-  padding: 40px; gap: 10px;
-  color: var(--text-muted);
-}
-.spinner {
-  width: 20px; height: 20px;
-  border: 2px solid rgba(255,255,255,0.1);
-  border-top-color: var(--green-pale);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* =================== EMPTY STATE =================== */
-.empty-state {
-  text-align: center; padding: 50px 20px;
-  color: var(--text-muted);
-}
-.empty-icon { font-size: 40px; margin-bottom: 14px; }
-.empty-text { font-size: 15px; }
-
-/* =================== ONBOARDING =================== */
-.onboard-card {
-  background: rgba(74,140,92,0.15);
-  border: 1px solid rgba(123,191,138,0.3);
-  border-radius: var(--radius);
-  padding: 28px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-.onboard-title {
-  font-family: 'Noto Serif Thai', serif;
-  font-size: 20px; font-weight: 600;
-  color: var(--green-pale);
-  margin-bottom: 10px;
-}
-.onboard-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; }
-
-/* =================== WALLET MANAGER =================== */
-.wallet-manager-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: var(--radius-sm);
-  margin-bottom: 8px;
-  transition: background 0.2s;
-}
-.wallet-manager-item:hover { background: rgba(255,255,255,0.08); }
-
-.wallet-manager-item .wm-icon {
-  font-size: 16px; flex-shrink: 0;
-}
-.wallet-manager-item .wm-name {
-  flex: 1; font-size: 14px; color: var(--text-primary);
-}
-.wallet-manager-item input.wm-edit {
-  flex: 1; padding: 6px 10px; font-size: 14px;
-}
-.wm-drag-handle {
-  color: var(--text-muted); cursor: grab; font-size: 14px; padding: 0 4px;
-  user-select: none;
-}
-
-@media (max-width: 600px) {
-  .header { padding: 16px 18px 12px; }
-  .nav { padding: 0 18px 16px; gap: 4px; }
-  .nav-btn { padding: 8px 14px; font-size: 12px; }
-  .main { padding: 0 18px 40px; }
-  .form-grid { grid-template-columns: 1fr; }
-  .summary-total { grid-template-columns: 1fr; }
-  .wallet-grid { grid-template-columns: 1fr 1fr; }
-  .settings-grid { grid-template-columns: 1fr; }
-  .chart-container { flex-direction: column; }
+  --cream:#faf6ef;--cream-dark:#f2ead8;--warm-white:#fffdf8;
+  --leaf-green:#5a8a5a;--forest:#3d6b45;--sage:#8aaa7a;--sage-light:#c4dab8;
+  --sunshine:#f5c842;--sun-pale:#fde68a;
+  --terracotta:#d4714a;--peach:#f0a882;
+  --sky:#a8d4e8;--sky-deep:#6baec8;
+  --blush:#e8b4a0;--lavender:#c8b8e0;
+  --brown:#7a5c3a;--brown-light:#a07850;
+  --ink:#3a3020;--ink-mid:#6a5840;--ink-light:#a09070;--ink-pale:#c8b898;
+  --income-color:#5a8a5a;--expense-color:#d4714a;--transfer-color:#6baec8;
+  --borrow-color:#c8a030;--paydebt-color:#9878c0;--forget-color:#a09070;
+  --lend-color:#e07060;--repay-color:#60a890;
+  --radius-xl:24px;--radius-lg:18px;--radius-md:12px;--radius-sm:8px;
+  --shadow-soft:0 4px 20px rgba(90,70,40,.12);--shadow-card:0 2px 12px rgba(90,70,40,.10);
+  --border:2px solid rgba(90,70,40,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+*,*::before,*::after{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cellipse cx='14' cy='14' rx='7' ry='10' fill='%235a8a5a' transform='rotate(-35 14 14)' opacity='.85'/%3E%3Ccircle cx='14' cy='14' r='2.5' fill='%23faf6ef'/%3E%3C/svg%3E") 7 7,auto;}
+button,select,input,a,[onclick]{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cellipse cx='14' cy='14' rx='7' ry='10' fill='%23d4714a' transform='rotate(-35 14 14)' opacity='.9'/%3E%3Ccircle cx='14' cy='14' r='2.5' fill='%23faf6ef'/%3E%3C/svg%3E") 7 7,pointer!important;}
+body{font-family:'Sarabun',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+.bg-scene{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.bg-sky-wash{position:absolute;inset:0;background:linear-gradient(180deg,#e8f4f8 0%,#f0ead8 45%,#e8e0c8 100%);}
+.bg-texture{position:absolute;inset:0;background-image:radial-gradient(ellipse 200px 120px at 15% 20%,rgba(168,212,232,.25) 0%,transparent 70%),radial-gradient(ellipse 300px 200px at 85% 10%,rgba(253,230,138,.2) 0%,transparent 70%);}
+.bg-sun{position:absolute;top:5%;right:15%;width:80px;height:80px;background:radial-gradient(circle,#fff9c4 30%,#fde68a 60%,rgba(253,230,138,0) 80%);border-radius:50%;box-shadow:0 0 40px 20px rgba(245,200,66,.3);animation:sunBreathe 6s ease-in-out infinite;}
+@keyframes sunBreathe{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.08);opacity:1}}
+.cloud{position:absolute;opacity:0;animation:cloudDrift linear infinite;}
+.cloud-1{top:8%;animation-duration:60s;animation-delay:0s;left:-250px;animation-fill-mode:forwards;}
+.cloud-2{top:16%;animation-duration:80s;animation-delay:20s;left:-200px;animation-fill-mode:forwards;}
+.cloud-3{top:6%;animation-duration:100s;animation-delay:40s;left:-300px;animation-fill-mode:forwards;}
+@keyframes cloudDrift{0%{transform:translateX(0);opacity:0}5%{opacity:.7}95%{opacity:.6}100%{transform:translateX(120vw);opacity:0}}
+.bg-hills{position:absolute;bottom:0;left:0;right:0;height:50%;}
+.petal{position:absolute;font-size:16px;animation:petalFloat linear infinite;pointer-events:none;opacity:.6;}
+@keyframes petalFloat{0%{transform:translateY(0) rotate(0deg);opacity:0}10%{opacity:.6}90%{opacity:.4}100%{transform:translateY(-100vh) rotate(360deg);opacity:0}}
+.app-wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;max-width:820px;margin:0 auto;padding:0 16px 80px;}
+.header{padding:24px 8px 16px;display:flex;align-items:center;justify-content:space-between;}
+.header-logo{display:flex;align-items:center;gap:12px;}
+.logo-badge{width:52px;height:52px;background:linear-gradient(135deg,var(--sage),var(--forest));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 16px rgba(61,107,69,.3),0 0 0 3px rgba(255,255,255,.6);position:relative;}
+.logo-badge::after{content:'🍃';position:absolute;top:-10px;right:-8px;font-size:16px;animation:leafWiggle 3s ease-in-out infinite;}
+@keyframes leafWiggle{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+.logo-title{font-family:'Mitr',sans-serif;font-size:18px;font-weight:600;color:var(--forest);}
+.logo-sub{font-size:11px;color:var(--ink-light);}
+.month-pill{display:flex;align-items:center;gap:6px;background:white;border:var(--border);border-radius:30px;padding:8px 16px;box-shadow:var(--shadow-card);position:relative;user-select:none;}
+.month-pill:hover{background:var(--cream);transform:translateY(-1px);}
+.pill-text{font-family:'Sarabun',sans-serif;font-size:13px;font-weight:600;color:var(--forest);}
+.pill-icon{font-size:14px;}
+.pill-arrow{font-size:10px;color:var(--ink-light);transition:transform .2s;}
+.month-pill.open .pill-arrow{transform:rotate(180deg);}
+
+/* MONTH-YEAR PICKER POPUP */
+.my-picker{display:none;position:absolute;top:calc(100% + 8px);right:0;background:white;border:var(--border);border-radius:var(--radius-xl);padding:18px;box-shadow:0 12px 40px rgba(58,48,32,.2);z-index:100;width:280px;animation:pickerIn .2s ease;}
+.my-picker.open{display:block;}
+@keyframes pickerIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.picker-year-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.picker-year-btn{width:32px;height:32px;border:var(--border);border-radius:50%;background:var(--cream);font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--ink-mid);}
+.picker-year-btn:hover{background:var(--cream-dark);transform:scale(1.1);}
+.picker-year-label{font-family:'Mitr',sans-serif;font-size:16px;font-weight:600;color:var(--forest);}
+.picker-months{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.picker-month{padding:10px 4px;border:2px solid transparent;border-radius:var(--radius-md);background:var(--cream);font-family:'Sarabun',sans-serif;font-size:12px;font-weight:500;color:var(--ink-mid);text-align:center;transition:all .15s;}
+.picker-month:hover{background:var(--cream-dark);transform:translateY(-1px);}
+.picker-month.current{border-color:var(--sage-light);color:var(--forest);font-weight:600;}
+.picker-month.selected{background:linear-gradient(135deg,var(--forest),var(--leaf-green));color:white;border-color:var(--forest);box-shadow:0 4px 12px rgba(61,107,69,.3);font-weight:700;}
+
+.nav-wrap{margin:4px 0 20px;background:white;border-radius:var(--radius-xl);padding:6px;box-shadow:var(--shadow-card);border:var(--border);display:flex;gap:4px;}
+.nav-btn{flex:1;padding:10px 4px;border:none;border-radius:var(--radius-lg);background:transparent;color:var(--ink-mid);font-family:'Sarabun',sans-serif;font-size:11px;font-weight:500;transition:all .2s cubic-bezier(.34,1.56,.64,1);display:flex;flex-direction:column;align-items:center;gap:2px;}
+.nav-btn .nav-icon{font-size:17px;}
+.nav-btn:hover{background:var(--cream);color:var(--forest);transform:translateY(-1px);}
+.nav-btn.active{background:linear-gradient(135deg,var(--forest),var(--leaf-green));color:white;box-shadow:0 4px 14px rgba(61,107,69,.35);transform:translateY(-2px);}
+.card{background:white;border-radius:var(--radius-xl);border:var(--border);padding:22px;margin-bottom:16px;box-shadow:var(--shadow-card);position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;right:0;width:60px;height:60px;background:radial-gradient(circle at top right,var(--cream-dark) 0%,transparent 70%);pointer-events:none;}
+.card-title{font-family:'Mitr',sans-serif;font-size:14px;font-weight:600;color:var(--forest);margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.card-title-icon{width:28px;height:28px;background:var(--sage-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;}
+.page{display:none;animation:pageIn .3s ease;}
+.page.active{display:block;}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:11px;font-weight:600;color:var(--ink-mid);letter-spacing:.4px;text-transform:uppercase;}
+input[type="text"],input[type="number"],input[type="date"],select,textarea{background:var(--cream);border:2px solid var(--cream-dark);border-radius:var(--radius-md);padding:11px 14px;color:var(--ink);font-family:'Sarabun',sans-serif;font-size:14px;outline:none;transition:all .2s;width:100%;appearance:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--sage);background:white;box-shadow:0 0 0 3px rgba(90,138,90,.12);}
+input::placeholder{color:var(--ink-pale);}
+select option{background:white;color:var(--ink);}
+.calc-hint{font-size:10px;color:var(--ink-pale);margin-top:-2px;}
+.calc-preview{font-size:11px;color:var(--leaf-green);font-weight:600;min-height:16px;margin-top:-4px;}
+/* ADD SECTION TABS */
+.add-section-tabs{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;}
+.add-tab{padding:8px 14px;border:var(--border);border-radius:30px;background:var(--cream);color:var(--ink-mid);font-family:'Sarabun',sans-serif;font-size:12px;font-weight:600;transition:all .2s;}
+.add-tab:hover{background:var(--cream-dark);}
+.add-tab.active-main{background:rgba(90,138,90,.12);border-color:var(--leaf-green);color:var(--forest);}
+.add-tab.active-transfer{background:rgba(107,174,200,.1);border-color:var(--sky-deep);color:var(--sky-deep);}
+.add-tab.active-forget{background:rgba(160,144,112,.1);border-color:var(--ink-pale);color:var(--ink-mid);}
+.add-tab.active-debt{background:rgba(200,160,48,.1);border-color:var(--borrow-color);color:var(--brown);}
+.debt-section{display:none;}
+.debt-section.active{display:block;}
+/* DEBT TYPE BUTTONS */
+.debt-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.debt-type-btn{padding:12px 10px;border:2px solid var(--cream-dark);border-radius:var(--radius-md);background:var(--cream);font-family:'Sarabun',sans-serif;font-size:12px;font-weight:600;transition:all .2s;text-align:center;line-height:1.5;}
+.debt-type-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-card);}
+.debt-type-btn.sel-borrow{border-color:var(--borrow-color);background:rgba(200,160,48,.1);color:var(--brown);}
+.debt-type-btn.sel-paydebt{border-color:var(--paydebt-color);background:rgba(152,120,192,.1);color:var(--paydebt-color);}
+.debt-type-btn.sel-lend{border-color:var(--lend-color);background:rgba(224,112,96,.1);color:var(--lend-color);}
+.debt-type-btn.sel-repay{border-color:var(--repay-color);background:rgba(96,168,144,.1);color:var(--repay-color);}
+.dtb-icon{font-size:20px;display:block;margin-bottom:4px;}
+.dtb-name{font-size:12px;font-weight:700;}
+.dtb-desc{font-size:10px;color:var(--ink-light);font-weight:400;margin-top:2px;}
+.borrow-subtype{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.borrow-sub-btn{padding:10px 8px;border:2px solid var(--cream-dark);border-radius:var(--radius-md);background:var(--cream);font-family:'Sarabun',sans-serif;font-size:11px;text-align:center;transition:all .2s;line-height:1.5;}
+.borrow-sub-btn.sel{border-color:var(--borrow-color);background:rgba(200,160,48,.15);color:var(--brown);}
+.contact-row{display:flex;align-items:center;gap:8px;}
+.contact-row select{flex:1;}
+.debt-remaining{font-size:11px;color:var(--terracotta);font-weight:600;margin-top:2px;}
+.debt-remaining.paid{color:var(--leaf-green);}
+.divider-label{font-size:10px;font-weight:700;color:var(--ink-light);text-transform:uppercase;letter-spacing:.8px;padding:4px 0 10px;border-top:1px solid var(--cream-dark);margin-top:6px;}
+/* TYPE BTN */
+.type-selector{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.type-btn{padding:10px 8px;border:2px solid var(--cream-dark);border-radius:var(--radius-md);background:var(--cream);color:var(--ink-mid);font-family:'Sarabun',sans-serif;font-size:12px;font-weight:500;transition:all .2s;text-align:center;}
+.type-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow-card);}
+.type-btn.t-income{border-color:var(--sage);background:rgba(90,138,90,.08);color:var(--forest);}
+.type-btn.t-expense{border-color:var(--terracotta);background:rgba(212,113,74,.08);color:var(--terracotta);}
+.transfer-arrow-row{display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px;font-size:20px;color:var(--sky-deep);}
+/* BUTTONS */
+.btn{padding:12px 24px;border:none;border-radius:var(--radius-md);font-family:'Sarabun',sans-serif;font-size:14px;font-weight:600;transition:all .2s cubic-bezier(.34,1.56,.64,1);display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+.btn-primary{background:linear-gradient(135deg,var(--forest) 0%,var(--leaf-green) 100%);color:white;box-shadow:0 4px 14px rgba(61,107,69,.3);width:100%;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(61,107,69,.4);}
+.btn-secondary{background:var(--cream);border:var(--border);color:var(--ink-mid);}
+.btn-secondary:hover{background:var(--cream-dark);}
+.btn-warning{background:linear-gradient(135deg,var(--brown-light),var(--brown));color:white;}
+.btn-icon{width:30px;height:30px;border-radius:var(--radius-sm);border:var(--border);background:var(--cream);color:var(--ink-mid);display:inline-flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s;}
+.btn-icon:hover{background:var(--cream-dark);transform:scale(1.1);}
+.btn-icon.del:hover{background:rgba(212,113,74,.15);color:var(--terracotta);}
+/* OVERVIEW */
+.totals-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+.total-card{background:white;border-radius:var(--radius-xl);border:var(--border);padding:20px;box-shadow:var(--shadow-card);text-align:center;position:relative;overflow:hidden;}
+.total-card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;border-radius:50%;opacity:.08;}
+.total-card.tc-green::after{background:var(--leaf-green);}
+.total-card.tc-red::after{background:var(--terracotta);}
+.total-card.tc-orange::after{background:var(--borrow-color);}
+.total-emoji{font-size:24px;margin-bottom:6px;}
+.total-label{font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.total-value{font-family:'Mitr',sans-serif;font-size:22px;font-weight:600;}
+.total-value.green{color:var(--forest);}
+.total-value.red{color:var(--terracotta);}
+.wallet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+.wallet-card{background:var(--cream);border:var(--border);border-radius:var(--radius-lg);padding:14px;transition:transform .2s;}
+.wallet-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-soft);}
+.wallet-name{font-size:11px;color:var(--ink-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;font-weight:600;}
+.wallet-balance{font-family:'Mitr',sans-serif;font-size:18px;font-weight:600;}
+.wallet-balance.pos{color:var(--forest);}
+.wallet-balance.neg{color:var(--terracotta);}
+.wallet-flow{display:flex;gap:8px;margin-top:4px;font-size:10px;}
+.wf-in{color:var(--leaf-green);font-weight:600;}
+.wf-out{color:var(--terracotta);font-weight:600;}
+/* CHART */
+.chart-wrap{display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.chart-canvas-wrap{position:relative;width:180px;height:180px;flex-shrink:0;}
+#pieChart{width:180px!important;height:180px!important;}
+.chart-legend{flex:1;min-width:180px;}
+.legend-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.legend-name{font-size:12px;color:var(--ink-mid);flex:1;}
+.legend-pct{font-size:13px;font-weight:700;}
+.legend-amt{font-size:11px;color:var(--ink-light);}
+/* ENTRIES TABS */
+.entries-tab-bar{display:flex;margin-bottom:16px;background:var(--cream);border-radius:var(--radius-md);padding:4px;border:var(--border);}
+.etab{flex:1;padding:8px 4px;border:none;background:transparent;font-family:'Sarabun',sans-serif;font-size:12px;font-weight:600;color:var(--ink-mid);border-radius:var(--radius-sm);transition:all .2s;text-align:center;}
+.etab.active{background:white;color:var(--forest);box-shadow:var(--shadow-card);}
+.etab-panel{display:none;}
+.etab-panel.active{display:block;}
+/* FILTER & TABLE */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.filter-bar select,.filter-bar input{flex:1;min-width:100px;padding:9px 12px;font-size:13px;}
+.entries-table{width:100%;border-collapse:collapse;font-size:12px;}
+.entries-table th{text-align:left;padding:8px 10px;color:var(--ink-light);font-weight:600;font-size:10px;text-transform:uppercase;border-bottom:2px solid var(--cream-dark);}
+.entries-table td{padding:10px 10px;border-bottom:1px solid var(--cream-dark);vertical-align:middle;}
+.entries-table tr:hover td{background:var(--cream);}
+.type-badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;}
+.b-income{background:rgba(90,138,90,.15);color:var(--forest);}
+.b-expense{background:rgba(212,113,74,.15);color:var(--terracotta);}
+.b-transfer{background:rgba(107,174,200,.15);color:var(--sky-deep);}
+.b-forget{background:rgba(160,144,112,.12);color:var(--ink-mid);}
+.b-lend{background:rgba(224,112,96,.15);color:var(--lend-color);}
+.b-repay{background:rgba(96,168,144,.15);color:var(--repay-color);}
+.amt-pos{color:var(--forest);font-weight:700;}
+.amt-neg{color:var(--terracotta);font-weight:700;}
+.amt-neutral{color:var(--ink-mid);font-weight:700;}
+/* DEBT LEDGER */
+.debt-ledger-card{background:var(--cream);border:var(--border);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;}
+.dlc-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.dlc-person{font-size:14px;font-weight:700;color:var(--ink);flex:1;}
+.dlc-total{font-family:'Mitr',sans-serif;font-size:18px;font-weight:700;}
+.dlc-total.owe{color:var(--terracotta);}
+.dlc-total.lent{color:var(--lend-color);}
+.dlc-total.done{color:var(--leaf-green);}
+.dlc-items{border-top:1px solid var(--cream-dark);margin-top:8px;padding-top:8px;}
+.dlc-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(90,70,40,.06);}
+.dlc-item:last-child{border-bottom:none;}
+.dlc-item-name{flex:1;font-size:12px;color:var(--ink-mid);}
+.dlc-item-date{font-size:10px;color:var(--ink-pale);}
+.dlc-item-remaining{font-size:10px;color:var(--terracotta);}
+.dlc-badge{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0;}
+.dlb-borrow{background:rgba(200,160,48,.15);color:var(--brown);}
+.dlb-lend{background:rgba(224,112,96,.15);color:var(--lend-color);}
+/* YEAR */
+.year-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+.month-tile{background:var(--cream);border:var(--border);border-radius:var(--radius-lg);padding:14px;transition:all .2s;}
+.month-tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-soft);}
+.month-tile.has-data{background:white;border-color:var(--sage-light);}
+.mt-name{font-size:12px;font-weight:600;color:var(--forest);margin-bottom:6px;}
+.mt-balance{font-size:16px;font-weight:700;font-family:'Mitr',sans-serif;}
+.mt-expense{font-size:10px;color:var(--terracotta);margin-top:2px;}
+.mt-empty{font-size:10px;color:var(--ink-pale);margin-top:4px;}
+/* SETTINGS */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.wallet-manager-item,.cat-manager-item,.contact-manager-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--cream);border:var(--border);border-radius:var(--radius-md);margin-bottom:8px;transition:background .2s;}
+.wallet-manager-item:hover,.cat-manager-item:hover,.contact-manager-item:hover{background:var(--cream-dark);}
+.wm-drag,.cat-drag,.cm-drag{color:var(--ink-pale);font-size:14px;user-select:none;}
+.wm-name,.cat-name,.cm-name{flex:1;font-size:13px;color:var(--ink);}
+.wm-edit-input,.cat-edit-input,.cm-edit-input{flex:1;padding:5px 8px;font-size:13px;}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(58,48,32,.4);backdrop-filter:blur(6px);align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:white;border-radius:var(--radius-xl);border:var(--border);padding:28px;width:92%;max-width:500px;box-shadow:0 20px 60px rgba(58,48,32,.25);animation:modalIn .3s cubic-bezier(.34,1.56,.64,1);}
+@keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-title{font-family:'Mitr',sans-serif;font-size:18px;font-weight:600;color:var(--forest);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
+.e-transfer-fields{display:none;}
+.e-transfer-fields.show{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:12px;grid-column:1/-1;}
+.onboard-banner{background:linear-gradient(135deg,var(--sage-light),var(--sun-pale));border-radius:var(--radius-xl);border:2px solid var(--sage);padding:24px;margin-bottom:16px;text-align:center;display:none;}
+.onboard-emoji{font-size:36px;margin-bottom:8px;}
+.onboard-title{font-family:'Mitr',sans-serif;font-size:18px;font-weight:600;color:var(--forest);margin-bottom:6px;}
+.onboard-desc{font-size:13px;color:var(--ink-mid);line-height:1.7;margin-bottom:16px;}
+.loading-state{display:flex;align-items:center;justify-content:center;gap:10px;padding:40px;color:var(--ink-light);font-size:13px;}
+.spinner{width:20px;height:20px;border:2.5px solid var(--cream-dark);border-top-color:var(--leaf-green);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:50px 20px;color:var(--ink-pale);}
+.empty-state .empty-icon{font-size:44px;margin-bottom:12px;}
+.empty-state .empty-text{font-size:14px;}
+.toast{position:fixed;bottom:24px;right:20px;z-index:999;padding:12px 20px;border-radius:var(--radius-lg);font-size:13px;font-weight:600;box-shadow:0 8px 30px rgba(58,48,32,.2);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:300px;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:linear-gradient(135deg,var(--forest),var(--leaf-green));color:white;}
+.toast.error{background:linear-gradient(135deg,#c0452a,var(--terracotta));color:white;}
+.toast.info{background:linear-gradient(135deg,var(--sky-deep),var(--sky));color:var(--ink);}
+.close-preview{background:var(--cream);border-radius:var(--radius-md);overflow:hidden;margin:10px 0;}
+.close-preview table{width:100%;border-collapse:collapse;font-size:12px;}
+.close-preview th{padding:6px 10px;background:var(--cream-dark);color:var(--ink-mid);text-align:left;font-size:10px;text-transform:uppercase;}
+.close-preview td{padding:6px 10px;border-bottom:1px solid var(--cream-dark);}
+.action-col{display:flex;gap:4px;}
+.info-note{font-size:11px;color:var(--ink-light);background:var(--cream);border-radius:var(--radius-sm);padding:8px 12px;margin-top:8px;border-left:3px solid var(--sage-light);}
+@media(max-width:520px){
+  .form-grid,.totals-row,.settings-grid{grid-template-columns:1fr;}
+  .form-group.full{grid-column:1;}
+  .debt-pair{grid-template-columns:1fr 1fr;}
+  .wallet-grid{grid-template-columns:1fr 1fr;}
+  .nav-btn{font-size:10px;}
+  .nav-btn .nav-icon{font-size:15px;}
 }
 </style>
 </head>
 <body>
-
-<!-- =================== BACKGROUND SCENE =================== -->
 <div class="bg-scene">
-  <div class="bg-sky"></div>
-  <div class="bg-sun"></div>
-
-  <!-- Clouds -->
-  <div class="cloud cloud-1"></div>
-  <div class="cloud cloud-2"></div>
-  <div class="cloud cloud-3"></div>
-  <div class="cloud cloud-4"></div>
-
-  <!-- Back Mountains -->
-  <div class="bg-mountain-back">
-    <svg viewBox="0 0 1440 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="mtnBack" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#1a3d28" stop-opacity="0.7"/>
-          <stop offset="100%" stop-color="#0d2518" stop-opacity="1"/>
-        </linearGradient>
-      </defs>
-      <path d="M0,400 L0,280 L120,180 L240,220 L360,120 L480,160 L560,80 L640,110 L720,60 L800,100 L880,40 L960,80 L1060,20 L1140,70 L1240,100 L1320,50 L1440,90 L1440,400 Z"
-            fill="url(#mtnBack)"/>
-    </svg>
-  </div>
-
-  <!-- Mid Mountains -->
-  <div class="bg-mountain-mid">
-    <svg viewBox="0 0 1440 350" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="mtnMid" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#1f4d33" stop-opacity="0.85"/>
-          <stop offset="100%" stop-color="#0f2a1a" stop-opacity="1"/>
-        </linearGradient>
-      </defs>
-      <path d="M0,350 L0,260 L100,200 L200,230 L320,150 L420,180 L500,110 L600,140 L700,90 L800,120 L900,70 L1000,100 L1100,60 L1200,95 L1300,75 L1440,110 L1440,350 Z"
-            fill="url(#mtnMid)"/>
-      <!-- Snow caps -->
-      <path d="M500,110 L480,135 L520,135 Z M700,90 L680,115 L720,115 Z M900,70 L880,96 L920,96 Z M1100,60 L1080,86 L1120,86 Z"
-            fill="rgba(255,255,255,0.25)"/>
-    </svg>
-  </div>
-
-  <!-- Front Mountains -->
-  <div class="bg-mountain-front">
-    <svg viewBox="0 0 1440 300" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="mtnFront" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#245a35" stop-opacity="0.9"/>
-          <stop offset="100%" stop-color="#112d1c" stop-opacity="1"/>
-        </linearGradient>
-      </defs>
-      <path d="M0,300 L0,200 L150,150 L280,170 L380,120 L480,145 L580,100 L680,130 L780,105 L880,125 L980,95 L1080,115 L1180,90 L1280,110 L1440,130 L1440,300 Z"
-            fill="url(#mtnFront)"/>
-    </svg>
-  </div>
-
-  <div class="bg-mist"></div>
-  <div class="bg-overlay"></div>
+  <div class="bg-sky-wash"></div><div class="bg-texture"></div><div class="bg-sun"></div>
+  <div class="cloud cloud-1"><svg width="200" height="60" viewBox="0 0 200 60" fill="none"><ellipse cx="100" cy="40" rx="90" ry="20" fill="white" opacity=".8"/><ellipse cx="70" cy="28" rx="45" ry="22" fill="white" opacity=".8"/><ellipse cx="130" cy="25" rx="40" ry="20" fill="white" opacity=".8"/></svg></div>
+  <div class="cloud cloud-2"><svg width="150" height="45" viewBox="0 0 150 45" fill="none"><ellipse cx="75" cy="32" rx="68" ry="14" fill="white" opacity=".7"/><ellipse cx="55" cy="22" rx="35" ry="17" fill="white" opacity=".7"/></svg></div>
+  <div class="cloud cloud-3"><svg width="240" height="70" viewBox="0 0 240 70" fill="none"><ellipse cx="120" cy="48" rx="110" ry="22" fill="white" opacity=".6"/><ellipse cx="85" cy="32" rx="55" ry="26" fill="white" opacity=".6"/></svg></div>
+  <div class="bg-hills"><svg viewBox="0 0 1440 360" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="hB" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c4dab8"/><stop offset="100%" stop-color="#8aaa7a"/></linearGradient><linearGradient id="hM" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#8aaa7a"/><stop offset="100%" stop-color="#5a8a5a"/></linearGradient><linearGradient id="hF" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5a8a5a"/><stop offset="100%" stop-color="#3d6b45"/></linearGradient></defs><path d="M0,360 L0,220 Q180,80 360,160 Q540,240 720,120 Q900,0 1080,140 Q1260,280 1440,180 L1440,360 Z" fill="url(#hB)" opacity=".5"/><path d="M0,360 L0,260 Q200,140 400,200 Q600,260 800,160 Q1000,60 1200,200 Q1320,270 1440,240 L1440,360 Z" fill="url(#hM)" opacity=".5"/><path d="M0,360 L0,300 Q240,200 480,260 Q720,320 960,240 Q1140,180 1440,280 L1440,360 Z" fill="url(#hF)" opacity=".6"/></svg></div>
 </div>
+<div class="petal" style="left:10%;bottom:-20px;animation-duration:12s;animation-delay:0s">🌸</div>
+<div class="petal" style="left:35%;bottom:-20px;animation-duration:15s;animation-delay:3s">🍃</div>
+<div class="petal" style="left:60%;bottom:-20px;animation-duration:10s;animation-delay:6s">🌼</div>
+<div class="petal" style="left:80%;bottom:-20px;animation-duration:14s;animation-delay:2s">🍀</div>
 
-<!-- =================== APP =================== -->
 <div class="app-wrapper">
-  <!-- HEADER -->
   <header class="header">
     <div class="header-logo">
-      <div class="logo-icon">🌿</div>
-      <div class="logo-text">
-        บัญชีรายรับรายจ่าย
-        <div class="logo-sub">Personal Finance Tracker</div>
-      </div>
+      <div class="logo-badge">📒</div>
+      <div><div class="logo-title">สมุดบัญชี</div><div class="logo-sub">Personal Finance Tracker</div></div>
     </div>
-    <div class="header-month">
-      <span style="color:var(--text-muted);font-size:12px">📅</span>
-      <select id="monthSelector" onchange="onMonthChange()"></select>
+    <div class="month-pill" onclick="toggleMonthPicker()">
+      <span class="pill-icon">🗓</span>
+      <span class="pill-text" id="pill-display"></span>
+      <span class="pill-arrow">▼</span>
+      <div class="my-picker" id="month-picker" onclick="event.stopPropagation()">
+        <div class="picker-year-row">
+          <button class="picker-year-btn" onclick="pickerChangeYear(-1)">◀</button>
+          <span class="picker-year-label" id="picker-year-label"></span>
+          <button class="picker-year-btn" onclick="pickerChangeYear(1)">▶</button>
+        </div>
+        <div class="picker-months" id="picker-months-grid"></div>
+      </div>
     </div>
   </header>
+  <div class="nav-wrap">
+    <button class="nav-btn active" onclick="showPage('page-add',0)"><span class="nav-icon">✏️</span>บันทึก</button>
+    <button class="nav-btn" onclick="showPage('page-overview',1)"><span class="nav-icon">📊</span>ภาพรวม</button>
+    <button class="nav-btn" onclick="showPage('page-entries',2)"><span class="nav-icon">📋</span>รายการ</button>
+    <button class="nav-btn" onclick="showPage('page-year',3)"><span class="nav-icon">🗂</span>รายปี</button>
+    <button class="nav-btn" onclick="showPage('page-settings',4)"><span class="nav-icon">⚙️</span>ตั้งค่า</button>
+  </div>
+  <main>
 
-  <!-- NAV -->
-  <nav class="nav">
-    <button class="nav-btn active" onclick="showPage('page-add')">➕ บันทึก</button>
-    <button class="nav-btn" onclick="showPage('page-overview')">📊 ภาพรวม</button>
-    <button class="nav-btn" onclick="showPage('page-entries')">📋 รายการ</button>
-    <button class="nav-btn" onclick="showPage('page-settings')">⚙️ ตั้งค่า</button>
-  </nav>
-
-  <main class="main">
-
-    <!-- =================== PAGE: ADD =================== -->
-    <div id="page-add" class="page active">
-      <div id="onboarding-notice" class="onboard-card" style="display:none">
-        <div class="onboard-title">🌱 ยินดีต้อนรับ!</div>
-        <p class="onboard-desc">ก่อนเริ่มใช้งาน ไปที่หน้า <strong>ตั้งค่า</strong> เพื่อกรอกยอดเงินตั้งต้นของแต่ละช่องก่อนนะครับ จะได้คำนวณยอดคงเหลือได้ถูกต้อง</p>
-        <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="showPage('page-settings')">ไปตั้งค่าเลย →</button>
+  <!-- PAGE: ADD -->
+  <div id="page-add" class="page active">
+    <div id="onboarding-banner" class="onboard-banner">
+      <div class="onboard-emoji">🌱</div><div class="onboard-title">ยินดีต้อนรับ!</div>
+      <p class="onboard-desc">ไปที่หน้า <strong>ตั้งค่า</strong> เพื่อใส่ Script URL และยอดเงินตั้งต้นก่อนนะคะ</p>
+      <button class="btn btn-primary" style="width:auto;padding:10px 24px" onclick="showPage('page-settings',4)">ไปตั้งค่าเลย →</button>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">✏️</div>บันทึกรายการใหม่</div>
+      <div class="add-section-tabs">
+        <button class="add-tab active-main" id="atab-main" onclick="switchAddTab('main')">💰 รายรับ-รายจ่าย</button>
+        <button class="add-tab" id="atab-transfer" onclick="switchAddTab('transfer')">🔄 ย้ายเงิน</button>
+        <button class="add-tab" id="atab-debt" onclick="switchAddTab('debt')">🤝 หนี้สิน</button>
+        <button class="add-tab" id="atab-forget" onclick="switchAddTab('forget')">❓ จำไม่ได้</button>
       </div>
-
-      <div class="card">
-        <div class="card-title">✏️ บันทึกรายการใหม่</div>
+      <!-- MAIN -->
+      <div class="debt-section active" id="dsec-main">
         <div class="form-grid">
-          <!-- Type selector -->
-          <div class="form-group full">
-            <label>ประเภทรายการ</label>
-            <div class="type-selector">
-              <button class="type-btn" onclick="setType('รายรับ','income')" id="tb-income">💰 รายรับ</button>
-              <button class="type-btn" onclick="setType('รายจ่าย','expense')" id="tb-expense">💸 รายจ่าย</button>
-              <button class="type-btn" onclick="setType('ย้ายเงิน','transfer')" id="tb-transfer">🔄 ย้ายเงิน</button>
-              <button class="type-btn" onclick="setType('ยืมเงิน','borrow')" id="tb-borrow">🤝 ยืมเงิน</button>
-              <button class="type-btn" onclick="setType('ชำระหนี้','paydebt')" id="tb-paydebt">✅ ชำระหนี้</button>
-              <button class="type-btn" onclick="setType('จำไม่ได้','forget')" id="tb-forget">❓ จำไม่ได้</button>
+          <div class="form-group full"><label>ประเภท</label><div class="type-selector"><button class="type-btn t-expense" onclick="setType('รายรับ','income')" id="tb-income">💰 รายรับ</button><button class="type-btn" onclick="setType('รายจ่าย','expense')" id="tb-expense">💸 รายจ่าย</button></div></div>
+          <div class="form-group"><label>วันที่</label><input type="date" id="f-date"></div>
+          <div class="form-group"><label>จำนวนเงิน</label><input type="text" id="f-amount" placeholder="50+30 หรือ 120*2…" oninput="calcPreview('f-amount','f-cp')"><div class="calc-hint">ใส่ + − * / ( ) ได้เลย</div><div class="calc-preview" id="f-cp"></div></div>
+          <div class="form-group full"><label>ชื่อรายการ</label><input type="text" id="f-name" placeholder="เช่น ข้าวกลางวัน, เงินเดือน…"></div>
+          <div class="form-group full"><label>ช่องเงิน</label><select id="f-wallet"><option value="">— เลือกช่องเงิน —</option></select></div>
+          <div class="form-group full" id="category-row" style="display:none"><label>หมวดหมู่</label><select id="f-category"><option value="">— เลือกหมวดหมู่ —</option></select></div>
+          <div class="form-group full"><label>หมายเหตุ</label><input type="text" id="f-note" placeholder="รายละเอียดเพิ่มเติม…"></div>
+          <div class="form-group full"><button class="btn btn-primary" onclick="submitMainEntry()">💾 บันทึกรายการ</button></div>
+        </div>
+      </div>
+      <!-- TRANSFER -->
+      <div class="debt-section" id="dsec-transfer">
+        <div class="form-grid">
+          <div class="form-group"><label>วันที่</label><input type="date" id="t-date"></div>
+          <div class="form-group"><label>จำนวนเงิน</label><input type="text" id="t-amount" placeholder="0.00" oninput="calcPreview('t-amount','t-cp')"><div class="calc-preview" id="t-cp"></div></div>
+          <div class="form-group full"><label>ชื่อรายการ</label><input type="text" id="t-name" placeholder="เช่น ถอนเงิน ATM, เติม EasyCard…"></div>
+          <div class="form-group"><label>จากช่อง</label><select id="f-wallet-from"><option value="">— เลือก —</option></select></div>
+          <div class="transfer-arrow-row">→</div>
+          <div class="form-group"><label>ไปช่อง</label><select id="f-wallet-to"><option value="">— เลือก —</option></select></div>
+          <div class="form-group full"><label>หมายเหตุ</label><input type="text" id="t-note" placeholder="รายละเอียด…"></div>
+          <div class="form-group full"><button class="btn btn-primary" onclick="submitTransferEntry()">💾 บันทึกการย้ายเงิน</button></div>
+        </div>
+      </div>
+      <!-- DEBT -->
+      <div class="debt-section" id="dsec-debt">
+        <p style="font-size:11px;color:var(--ink-light);margin-bottom:10px">เลือกว่าต้องการบันทึกอะไร:</p>
+        <div style="font-size:10px;font-weight:700;color:var(--ink-light);text-transform:uppercase;letter-spacing:.8px;padding:0 0 8px;border-bottom:1px solid var(--cream-dark);margin-bottom:10px">เราเป็นลูกหนี้</div>
+        <div class="debt-pair">
+          <button class="debt-type-btn" id="dtb-borrow" onclick="setDebtType('borrow')"><span class="dtb-icon">🤝</span><span class="dtb-name">ยืมเงินมา</span><span class="dtb-desc">คนอื่นออกแทน<br>หรือยืมมาเก็บไว้</span></button>
+          <button class="debt-type-btn" id="dtb-paydebt" onclick="setDebtType('paydebt')"><span class="dtb-icon">✅</span><span class="dtb-name">ชำระหนี้</span><span class="dtb-desc">จ่ายคืนเงินที่<br>เราเคยยืม</span></button>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:var(--ink-light);text-transform:uppercase;letter-spacing:.8px;padding:0 0 8px;border-bottom:1px solid var(--cream-dark);margin-bottom:10px">เราเป็นเจ้าหนี้</div>
+        <div class="debt-pair">
+          <button class="debt-type-btn" id="dtb-lend" onclick="setDebtType('lend')"><span class="dtb-icon">💵</span><span class="dtb-name">ให้ยืมเงิน</span><span class="dtb-desc">เราออกเงินให้<br>คนอื่นยืม</span></button>
+          <button class="debt-type-btn" id="dtb-repay" onclick="setDebtType('repay')"><span class="dtb-icon">🔙</span><span class="dtb-name">รับเงินคืน</span><span class="dtb-desc">คนอื่นคืนเงิน<br>ที่ยืมไป</span></button>
+        </div>
+        <!-- FORM: ยืมเงินมา -->
+        <div id="dform-borrow" class="debt-section" style="margin-top:14px;border-top:2px solid var(--cream-dark);padding-top:14px">
+          <div class="form-grid">
+            <div class="form-group full"><label>ประเภทการยืม</label>
+              <div class="borrow-subtype">
+                <button class="borrow-sub-btn" id="bsub-instant" onclick="setBorrowSub('instant')"><strong>💳 ออกแทน</strong><br><small>เพื่อนออกเงินแทน ไม่เพิ่มเงินในกระเป๋า</small></button>
+                <button class="borrow-sub-btn" id="bsub-cash" onclick="setBorrowSub('cash')"><strong>💰 ยืมมาเก็บ</strong><br><small>ได้เงินสดมา เพิ่มเงินในกระเป๋าทันที</small></button>
+              </div>
             </div>
+            <div class="form-group"><label>วันที่</label><input type="date" id="db-date"></div>
+            <div class="form-group"><label>จำนวนเงิน</label><input type="text" id="db-amount" placeholder="0.00" oninput="calcPreview('db-amount','db-cp')"><div class="calc-preview" id="db-cp"></div></div>
+            <div class="form-group full"><label>ชื่อรายการ / ใช้ทำอะไร</label><input type="text" id="db-name" placeholder="เช่น ค่าอาหาร, ค่าพยาบาล…"></div>
+            <div class="form-group full"><label>ยืมจากใคร</label><div class="contact-row"><select id="db-contact"><option value="">— เลือกชื่อ —</option></select><button class="btn-icon" onclick="quickAddContact()" title="เพิ่มชื่อใหม่">➕</button></div></div>
+            <div class="form-group full" id="db-wallet-row" style="display:none"><label>เงินเข้าช่องไหน</label><select id="db-wallet"><option value="">— เลือกช่องเงิน —</option></select></div>
+            <div class="form-group full"><label>หมายเหตุ</label><input type="text" id="db-note"></div>
+            <div class="form-group full"><button class="btn btn-primary" onclick="submitBorrowEntry()">💾 บันทึกการยืมเงิน</button></div>
           </div>
-
-          <!-- Date -->
-          <div class="form-group">
-            <label>วันที่</label>
-            <input type="date" id="f-date">
+        </div>
+        <!-- FORM: ชำระหนี้ -->
+        <div id="dform-paydebt" class="debt-section" style="margin-top:14px;border-top:2px solid var(--cream-dark);padding-top:14px">
+          <div class="form-grid">
+            <div class="form-group full"><label>เลือกรายการที่ยืม</label><select id="pd-debt-select" onchange="onDebtSelectChange('pd')"><option value="">— เลือกรายการหนี้ —</option></select><div class="debt-remaining" id="pd-remaining"></div></div>
+            <div class="form-group"><label>วันที่ชำระ</label><input type="date" id="pd-date"></div>
+            <div class="form-group"><label>จำนวนที่ชำระ</label><input type="text" id="pd-amount" placeholder="0.00" oninput="calcPreview('pd-amount','pd-cp')"><div class="calc-preview" id="pd-cp"></div></div>
+            <div class="form-group full"><label>ช่องเงินที่จ่ายออก</label><select id="pd-wallet"><option value="">— เลือกช่องเงิน —</option></select></div>
+            <div class="form-group full"><label>หมายเหตุ</label><input type="text" id="pd-note"></div>
+            <div class="form-group full"><button class="btn btn-primary" onclick="submitPaydebtEntry()">✅ ชำระหนี้</button></div>
           </div>
-
-          <!-- Amount -->
-          <div class="form-group">
-            <label>จำนวนเงิน (฿/NT$)</label>
-            <input type="number" id="f-amount" placeholder="0.00" min="0" step="0.01">
+        </div>
+        <!-- FORM: ให้ยืมเงิน -->
+        <div id="dform-lend" class="debt-section" style="margin-top:14px;border-top:2px solid var(--cream-dark);padding-top:14px">
+          <div class="form-grid">
+            <div class="form-group"><label>วันที่</label><input type="date" id="ln-date"></div>
+            <div class="form-group"><label>จำนวนที่ให้ยืม</label><input type="text" id="ln-amount" placeholder="0.00" oninput="calcPreview('ln-amount','ln-cp')"><div class="calc-preview" id="ln-cp"></div></div>
+            <div class="form-group full"><label>ชื่อรายการ</label><input type="text" id="ln-name" placeholder="เช่น ค่ากินข้าว, ค่าเช่า…"></div>
+            <div class="form-group full"><label>ให้ใครยืม</label><div class="contact-row"><select id="ln-contact"><option value="">— เลือกชื่อ —</option></select><button class="btn-icon" onclick="quickAddContact()" title="เพิ่มชื่อใหม่">➕</button></div></div>
+            <div class="form-group full"><label>จ่ายจากช่องไหน</label><select id="ln-wallet"><option value="">— เลือกช่องเงิน —</option></select></div>
+            <div class="form-group full"><label>หมายเหตุ</label><input type="text" id="ln-note"></div>
+            <div class="form-group full"><button class="btn btn-primary" onclick="submitLendEntry()">💾 บันทึกการให้ยืม</button></div>
           </div>
-
-          <!-- Name -->
-          <div class="form-group full">
-            <label>ชื่อรายการ</label>
-            <input type="text" id="f-name" placeholder="เช่น ค่าอาหารกลางวัน, เติม EasyCard...">
+        </div>
+        <!-- FORM: รับเงินคืน -->
+        <div id="dform-repay" class="debt-section" style="margin-top:14px;border-top:2px solid var(--cream-dark);padding-top:14px">
+          <div class="form-grid">
+            <div class="form-group full"><label>เลือกรายการที่ให้ยืม</label><select id="rp-lend-select" onchange="onDebtSelectChange('rp')"><option value="">— เลือกรายการ —</option></select><div class="debt-remaining" id="rp-remaining"></div></div>
+            <div class="form-group"><label>วันที่รับคืน</label><input type="date" id="rp-date"></div>
+            <div class="form-group"><label>จำนวนที่รับคืน</label><input type="text" id="rp-amount" placeholder="0.00" oninput="calcPreview('rp-amount','rp-cp')"><div class="calc-preview" id="rp-cp"></div></div>
+            <div class="form-group full"><label>เงินเข้าช่องไหน</label><select id="rp-wallet"><option value="">— เลือกช่องเงิน —</option></select></div>
+            <div class="form-group full"><label>หมายเหตุ</label><input type="text" id="rp-note"></div>
+            <div class="form-group full"><button class="btn btn-primary" onclick="submitRepayEntry()">🔙 บันทึกการรับเงินคืน</button></div>
           </div>
-
-          <!-- Wallet (normal) -->
-          <div class="form-group full" id="wallet-normal-row">
-            <label>ช่องเงิน</label>
-            <select id="f-wallet"><option value="">-- เลือกช่องเงิน --</option></select>
-          </div>
-
-          <!-- Transfer wallets -->
-          <div class="transfer-row" id="wallet-transfer-row">
-            <div class="form-group">
-              <label>จากช่อง</label>
-              <select id="f-wallet-from"><option value="">-- เลือก --</option></select>
-            </div>
-            <div class="transfer-arrow">→</div>
-            <div class="form-group">
-              <label>ไปช่อง</label>
-              <select id="f-wallet-to"><option value="">-- เลือก --</option></select>
-            </div>
-          </div>
-
-          <!-- Category (for expense) -->
-          <div class="form-group full" id="category-row" style="display:none">
-            <label>หมวดหมู่ค่าใช้จ่าย</label>
-            <select id="f-category">
-              <option value="">-- เลือกหมวดหมู่ --</option>
-              <option>ของกิน</option>
-              <option>ของใช้</option>
-              <option>รายจ่ายจำเป็น</option>
-              <option>การเดินทาง</option>
-              <option>จำไม่ได้</option>
-            </select>
-          </div>
-
-          <!-- Note -->
-          <div class="form-group full">
-            <label>หมายเหตุ (ไม่บังคับ)</label>
-            <input type="text" id="f-note" placeholder="รายละเอียดเพิ่มเติม...">
-          </div>
-
-          <div class="form-group full">
-            <button class="btn btn-primary" onclick="submitEntry()">💾 บันทึกรายการ</button>
-          </div>
+        </div>
+      </div>
+      <!-- FORGET -->
+      <div class="debt-section" id="dsec-forget">
+        <div class="form-grid">
+          <div class="form-group"><label>วันที่</label><input type="date" id="fg-date"></div>
+          <div class="form-group"><label>จำนวนเงิน</label><input type="text" id="fg-amount" placeholder="0.00" oninput="calcPreview('fg-amount','fg-cp')"><div class="calc-preview" id="fg-cp"></div></div>
+          <div class="form-group full"><label>ชื่อรายการ</label><input type="text" id="fg-name" placeholder="ไม่แน่ใจว่าใช้ทำอะไร…"></div>
+          <div class="form-group full"><label>ช่องเงิน</label><select id="fg-wallet"><option value="">— เลือกช่องเงิน —</option></select></div>
+          <div class="form-group full"><label>หมวดหมู่</label><select id="fg-category"><option value="">— เลือกหมวดหมู่ —</option></select></div>
+          <div class="form-group full"><label>หมายเหตุ</label><input type="text" id="fg-note"></div>
+          <div class="form-group full"><button class="btn btn-primary" onclick="submitForgetEntry()">💾 บันทึกรายการ</button></div>
         </div>
       </div>
     </div>
+    <div class="card"><div class="card-title"><div class="card-title-icon">⚡</div>รายการล่าสุด</div><div id="recent-entries-preview"><div class="loading-state"><div class="spinner"></div> กำลังโหลด…</div></div></div>
+  </div>
 
-    <!-- =================== PAGE: OVERVIEW =================== -->
-    <div id="page-overview" class="page">
-      <!-- Total summary -->
-      <div class="summary-total" style="margin-bottom:20px">
-        <div class="total-card">
-          <div class="total-label">💰 ยอดคงเหลือทั้งหมด</div>
-          <div class="total-value green" id="total-balance">กำลังโหลด...</div>
-        </div>
-        <div class="total-card">
-          <div class="total-label">💸 ใช้จ่ายเดือนนี้</div>
-          <div class="total-value red" id="total-expense">กำลังโหลด...</div>
-        </div>
+  <!-- PAGE: OVERVIEW -->
+  <div id="page-overview" class="page">
+    <div class="totals-row">
+      <div class="total-card tc-green"><div class="total-emoji">🏦</div><div class="total-label">ยอดคงเหลือทั้งหมด</div><div class="total-value green" id="total-balance">—</div></div>
+      <div class="total-card tc-red"><div class="total-emoji">💸</div><div class="total-label">ใช้จ่ายเดือนนี้</div><div class="total-value red" id="total-expense">—</div></div>
+    </div>
+    <div class="totals-row">
+      <div class="total-card tc-orange"><div class="total-emoji">🤝</div><div class="total-label">หนี้ที่เราค้างอยู่</div><div class="total-value" id="total-owe" style="color:var(--terracotta)">—</div></div>
+      <div class="total-card"><div class="total-emoji">💵</div><div class="total-label">เขาค้างเงินเรา</div><div class="total-value" id="total-lent" style="color:var(--lend-color)">—</div></div>
+    </div>
+    <div class="card"><div class="card-title"><div class="card-title-icon">🏦</div>ยอดแต่ละช่องเงิน</div><div class="wallet-grid" id="wallet-grid"><div class="loading-state"><div class="spinner"></div></div></div></div>
+    <div class="card"><div class="card-title"><div class="card-title-icon">🥧</div>สัดส่วนค่าใช้จ่าย</div><div class="chart-wrap"><div class="chart-canvas-wrap"><canvas id="pieChart"></canvas></div><div class="chart-legend" id="chart-legend"><div class="loading-state"><div class="spinner"></div></div></div></div></div>
+  </div>
+
+  <!-- PAGE: ENTRIES -->
+  <div id="page-entries" class="page">
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">📋</div>รายการทั้งหมด</div>
+      <div class="entries-tab-bar">
+        <button class="etab active" onclick="switchEntriesTab('normal')">💰 รายรับ-รายจ่าย</button>
+        <button class="etab" onclick="switchEntriesTab('debt')">🤝 หนี้สิน</button>
       </div>
-
-      <!-- Wallet cards -->
-      <div class="card">
-        <div class="card-title">🏦 ยอดคงเหลือแต่ละช่อง</div>
-        <div class="wallet-grid" id="wallet-grid">
-          <div class="loading"><div class="spinner"></div> กำลังโหลด...</div>
+      <div class="etab-panel active" id="etpanel-normal">
+        <div class="filter-bar">
+          <select id="filter-type" onchange="renderEntries()"><option value="">ทุกประเภท</option><option>รายรับ</option><option>รายจ่าย</option><option>ย้ายเงิน</option><option>จำไม่ได้</option></select>
+          <select id="filter-wallet" onchange="renderEntries()"><option value="">ทุกช่องเงิน</option></select>
+          <select id="filter-category" onchange="renderEntries()"><option value="">ทุกหมวดหมู่</option></select>
+          <input type="text" id="filter-search" placeholder="🔍 ค้นหา…" oninput="renderEntries()" style="min-width:110px">
         </div>
+        <div id="entries-container"><div class="loading-state"><div class="spinner"></div> กำลังโหลด…</div></div>
       </div>
-
-      <!-- Pie chart -->
-      <div class="card">
-        <div class="card-title">📈 สัดส่วนค่าใช้จ่าย</div>
-        <div class="chart-container">
-          <div class="chart-wrap">
-            <canvas id="pieChart"></canvas>
-          </div>
-          <div class="chart-legend" id="chart-legend">
-            <div class="loading"><div class="spinner"></div></div>
-          </div>
+      <div class="etab-panel" id="etpanel-debt">
+        <div class="filter-bar">
+          <select id="filter-debt-type" onchange="renderDebtLedger()"><option value="">ทั้งหมด</option><option value="owe">เราค้างคนอื่น</option><option value="lent">คนอื่นค้างเรา</option><option value="done">ชำระครบแล้ว</option></select>
+          <select id="filter-debt-person" onchange="renderDebtLedger()"><option value="">ทุกคน</option></select>
         </div>
+        <div id="debt-ledger-container"><div class="loading-state"><div class="spinner"></div></div></div>
       </div>
     </div>
+  </div>
 
-    <!-- =================== PAGE: ENTRIES =================== -->
-    <div id="page-entries" class="page">
-      <div class="card">
-        <div class="card-title">📋 รายการทั้งหมด</div>
-        <div class="table-controls">
-          <select id="filter-type" onchange="renderEntries()">
-            <option value="">ทุกประเภท</option>
-            <option>รายรับ</option>
-            <option>รายจ่าย</option>
-            <option>ย้ายเงิน</option>
-            <option>ยืมเงิน</option>
-            <option>ชำระหนี้</option>
-            <option>จำไม่ได้</option>
-          </select>
-          <select id="filter-wallet" onchange="renderEntries()">
-            <option value="">ทุกช่องเงิน</option>
-            <option>เงินสด (ใช้จ่าย)</option>
-            <option>เงินสด (เงินเก็บ)</option>
-            <option>กรุงไทย / KTC</option>
-            <option>金融卡 (郵政)</option>
-            <option>SCB / Planet</option>
-            <option>EasyCard (บัตรนกสีเขียว)</option>
-            <option>EasyCard (บัตรนักเรียน)</option>
-          </select>
-          <input type="text" id="filter-search" placeholder="🔍 ค้นหา..." oninput="renderEntries()" style="min-width:150px">
-        </div>
-        <div id="entries-container">
-          <div class="loading"><div class="spinner"></div> กำลังโหลด...</div>
-        </div>
+  <!-- PAGE: YEAR -->
+  <div id="page-year" class="page">
+    <div class="card"><div class="card-title"><div class="card-title-icon">🗂</div>ภาพรวมรายปี <span id="year-overview-label" style="color:var(--ink-light);font-weight:400"></span></div><div class="year-grid" id="year-grid"><div class="loading-state"><div class="spinner"></div></div></div></div>
+  </div>
+
+  <!-- PAGE: SETTINGS -->
+  <div id="page-settings" class="page">
+    <div class="card"><div class="card-title"><div class="card-title-icon">🔗</div>เชื่อมต่อ Google Apps Script</div><div class="form-group"><label>Script URL</label><input type="text" id="s-script-url" placeholder="https://script.google.com/macros/s/..."></div><button class="btn btn-primary" style="margin-top:12px" onclick="saveScriptUrl()">บันทึก URL</button><div class="info-note">📌 Deploy → Web App → Execute as: Me → Anyone</div></div>
+    <div class="card"><div class="card-title"><div class="card-title-icon">🏦</div>จัดการช่องเงิน</div><p style="font-size:12px;color:var(--ink-light);margin-bottom:14px">ลากเพื่อเรียงลำดับ, กดแก้ไขหรือลบได้</p><div id="wallet-manager-list" style="margin-bottom:14px"></div><div style="display:flex;gap:8px"><input type="text" id="new-wallet-input" placeholder="ชื่อช่องเงินใหม่ เช่น Rabbit Card" style="flex:1"><button class="btn btn-primary" style="width:auto;padding:11px 18px;white-space:nowrap" onclick="addWallet()">+ เพิ่ม</button></div><div class="info-note">⚠️ การลบไม่กระทบข้อมูลเก่า</div></div>
+    <div class="card"><div class="card-title"><div class="card-title-icon">🏷️</div>จัดการหมวดหมู่ค่าใช้จ่าย</div><p style="font-size:12px;color:var(--ink-light);margin-bottom:14px">ลากเพื่อเรียงลำดับ, กดแก้ไขหรือลบได้</p><div id="cat-manager-list" style="margin-bottom:14px"></div><div style="display:flex;gap:8px"><input type="text" id="new-cat-input" placeholder="ชื่อหมวดหมู่ใหม่ เช่น ท่องเที่ยว" style="flex:1"><button class="btn btn-primary" style="width:auto;padding:11px 18px;white-space:nowrap" onclick="addCategory()">+ เพิ่ม</button></div><div class="info-note">⚠️ การลบไม่กระทบข้อมูลรายการเก่า</div></div>
+    <div class="card"><div class="card-title"><div class="card-title-icon">👥</div>จัดการรายชื่อ (สำหรับหนี้สิน)</div><p style="font-size:12px;color:var(--ink-light);margin-bottom:14px">รายชื่อเพื่อน/ครอบครัวที่เกี่ยวข้องกับการยืมเงิน</p><div id="contact-manager-list" style="margin-bottom:14px"></div><div style="display:flex;gap:8px"><input type="text" id="new-contact-input" placeholder="เช่น สมชาย, แม่, เพื่อนห้อง" style="flex:1"><button class="btn btn-primary" style="width:auto;padding:11px 18px;white-space:nowrap" onclick="addContact()">+ เพิ่ม</button></div></div>
+    <div class="card"><div class="card-title"><div class="card-title-icon">💰</div>ยอดตั้งต้น — <span id="settings-month-label" style="color:var(--ink-light);font-weight:400"></span></div><p style="font-size:12px;color:var(--ink-light);margin-bottom:14px">กรอกยอดเงิน ณ ปัจจุบันของแต่ละช่อง</p><div class="settings-grid" id="opening-balance-form"></div><button class="btn btn-primary" style="margin-top:16px" onclick="saveOpeningBalances()">💾 บันทึกยอดตั้งต้น</button></div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">🔄</div>รายการประจำ (Recurring)</div>
+      <p style="font-size:12px;color:var(--ink-light);margin-bottom:14px">บันทึกรายการที่ใช้บ่อยไว้ แล้วกด 1 ปุ่มเพื่อเพิ่มทันที</p>
+      <div id="recurring-list" style="margin-bottom:14px"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input type="text" id="rc-name" placeholder="ชื่อ เช่น ค่าห้อง" style="flex:2;min-width:100px">
+        <input type="number" id="rc-amount" placeholder="จำนวน" style="flex:1;min-width:80px">
+        <select id="rc-type" style="flex:1;min-width:80px"><option>รายจ่าย</option><option>รายรับ</option></select>
+        <button class="btn btn-primary" style="width:auto;padding:11px 18px;white-space:nowrap" onclick="addRecurring()">+ เพิ่ม</button>
       </div>
     </div>
-
-    <!-- =================== PAGE: SETTINGS =================== -->
-    <div id="page-settings" class="page">
-      <div class="card">
-        <div class="card-title">🔗 เชื่อมต่อ Google Apps Script</div>
-        <div class="form-group">
-          <label>URL ของ Apps Script (Web App)</label>
-          <input type="text" id="s-script-url" placeholder="https://script.google.com/macros/s/...">
-        </div>
-        <button class="btn btn-primary" style="margin-top:12px" onclick="saveScriptUrl()">บันทึก URL</button>
-      </div>
-
-      <!-- WALLET MANAGER -->
-      <div class="card">
-        <div class="card-title">🏦 จัดการช่องเงิน</div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">เพิ่ม ลบ หรือแก้ไขชื่อช่องเงินได้ตามต้องการ</p>
-        <div id="wallet-manager-list" style="margin-bottom:14px"></div>
-        <div style="display:flex;gap:10px">
-          <input type="text" id="new-wallet-input" placeholder="ชื่อช่องเงินใหม่ เช่น Rabbit Card" style="flex:1">
-          <button class="btn btn-primary" style="width:auto;padding:11px 20px;white-space:nowrap" onclick="addWallet()">+ เพิ่ม</button>
-        </div>
-        <p style="font-size:11px;color:var(--text-muted);margin-top:10px">⚠️ การลบช่องเงินจะไม่กระทบข้อมูลเก่าใน Sheet แต่ช่องนั้นจะหายจากเมนูเลือก</p>
-      </div>
-
-      <div class="card">
-        <div class="card-title">💰 ยอดเงินตั้งต้น — <span id="settings-month-label"></span></div>
-        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">กรอกยอดเงินที่มีอยู่ ณ ปัจจุบันในแต่ละช่อง</p>
-        <div class="settings-grid" id="opening-balance-form">
-          <!-- dynamically generated -->
-        </div>
-        <button class="btn btn-primary" style="margin-top:16px" onclick="saveOpeningBalances()">💾 บันทึกยอดตั้งต้น</button>
-      </div>
-
-      <div class="card">
-        <div class="card-title">📅 ปิดเดือน</div>
-        <div class="close-month-section">
-          <div>
-            <p style="font-size:14px;color:var(--text-secondary)">ยอดคงเหลือของเดือนนี้จะกลายเป็นเงินตั้งต้นของเดือนถัดไปอัตโนมัติ</p>
-            <p style="font-size:12px;color:var(--text-muted);margin-top:4px">⚠️ กดเมื่อสิ้นเดือนเท่านั้น</p>
-          </div>
-          <button class="btn btn-warning" onclick="closeMonth()">🔒 ปิดเดือนนี้</button>
-        </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-icon">💾</div>สำรองข้อมูล (Export)</div>
+      <p style="font-size:12px;color:var(--ink-light);margin-bottom:14px">ดาวน์โหลดข้อมูลของเดือนปัจจุบันเป็น CSV ไว้สำรอง</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-secondary" onclick="exportCSV('entries')">📄 Export รายการ (.csv)</button>
+        <button class="btn btn-secondary" onclick="exportCSV('debt')">📄 Export หนี้สิน (.csv)</button>
       </div>
     </div>
-
+    <div class="card"><div class="card-title"><div class="card-title-icon">📅</div>ปิดเดือน</div><p style="font-size:13px;color:var(--ink-mid);margin-bottom:6px">ยอดคงเหลือจะถูกนำไปเป็นยอดตั้งต้นของเดือนถัดไป</p><p style="font-size:11px;color:var(--terracotta);margin-bottom:16px">⚠️ กดเมื่อสิ้นเดือนเท่านั้น</p><button class="btn btn-warning" onclick="openCloseMonthModal()" style="width:auto;padding:12px 24px">🔒 ปิดเดือนนี้</button></div>
+  </div>
   </main>
 </div>
 
-<!-- =================== MODAL: EDIT =================== -->
+<!-- MODAL: EDIT -->
 <div class="modal-overlay" id="edit-modal">
-  <div class="modal">
+  <div class="modal-box">
     <div class="modal-title">✏️ แก้ไขรายการ</div>
-    <div class="form-grid" id="edit-form-body">
-      <!-- same fields, generated dynamically -->
-      <input type="hidden" id="e-id">
+    <div class="form-grid">
+      <input type="hidden" id="e-id"><input type="hidden" id="e-orig-type">
       <div class="form-group"><label>วันที่</label><input type="date" id="e-date"></div>
-      <div class="form-group"><label>จำนวนเงิน</label><input type="number" id="e-amount" min="0" step="0.01"></div>
+      <div class="form-group"><label>จำนวนเงิน</label><input type="text" id="e-amount" oninput="calcPreview('e-amount','e-cp')"><div class="calc-preview" id="e-cp"></div></div>
       <div class="form-group full"><label>ชื่อรายการ</label><input type="text" id="e-name"></div>
-      <div class="form-group full"><label>ประเภท</label>
-        <select id="e-type">
-          <option>รายรับ</option><option>รายจ่าย</option><option>ย้ายเงิน</option>
-          <option>ยืมเงิน</option><option>ชำระหนี้</option><option>จำไม่ได้</option>
-        </select>
-      </div>
-      <div class="form-group full"><label>ช่องเงิน</label>
-        <select id="e-wallet"><option value="">--</option></select>
-      </div>
-      <div class="form-group full"><label>หมวดหมู่</label>
-        <select id="e-category">
-          <option value="">--</option>
-          <option>ของกิน</option><option>ของใช้</option>
-          <option>รายจ่ายจำเป็น</option><option>การเดินทาง</option><option>จำไม่ได้</option>
-        </select>
-      </div>
+      <div class="form-group full"><label>ประเภท</label><select id="e-type" onchange="onEditTypeChange()"><option>รายรับ</option><option>รายจ่าย</option><option>ย้ายเงิน</option><option>จำไม่ได้</option></select></div>
+      <div class="form-group full" id="e-wallet-normal"><label>ช่องเงิน</label><select id="e-wallet"><option value="">—</option></select></div>
+      <div class="e-transfer-fields" id="e-transfer-fields"><div class="form-group"><label>จากช่อง</label><select id="e-wallet-from"><option value="">—</option></select></div><div style="display:flex;align-items:flex-end;justify-content:center;padding-bottom:14px;font-size:20px;color:var(--sky-deep)">→</div><div class="form-group"><label>ไปช่อง</label><select id="e-wallet-to"><option value="">—</option></select></div></div>
+      <div class="form-group full" id="e-category-row"><label>หมวดหมู่</label><select id="e-category"><option value="">—</option></select></div>
       <div class="form-group full"><label>หมายเหตุ</label><input type="text" id="e-note"></div>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-secondary" onclick="closeModal()">ยกเลิก</button>
-      <button class="btn btn-primary" style="width:auto" onclick="submitEdit()">บันทึก</button>
-    </div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('edit-modal')">ยกเลิก</button><button class="btn btn-primary" style="width:auto" onclick="submitEdit()">💾 บันทึก</button></div>
   </div>
 </div>
-
-<!-- Toast -->
+<!-- MODAL: CLOSE MONTH -->
+<div class="modal-overlay" id="close-month-modal">
+  <div class="modal-box">
+    <div class="modal-title">🔒 ยืนยันปิดเดือน</div>
+    <p style="font-size:13px;color:var(--ink-mid);margin-bottom:12px">ยอดคงเหลือของ <strong id="cm-month-name"></strong> จะเป็นยอดตั้งต้นของ <strong id="cm-next-month-name"></strong></p>
+    <div class="close-preview"><table><thead><tr><th>ช่องเงิน</th><th>ยอดคงเหลือ</th></tr></thead><tbody id="cm-preview-body"></tbody></table></div>
+    <div class="info-note">✅ ข้อมูลรายการเก่าจะยังอยู่ครบ</div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('close-month-modal')">ยกเลิก</button><button class="btn btn-warning" onclick="confirmCloseMonth()" style="width:auto">ยืนยัน</button></div>
+  </div>
+</div>
+<!-- MODAL: QUICK ADD CONTACT -->
+<div class="modal-overlay" id="quick-contact-modal">
+  <div class="modal-box" style="max-width:360px">
+    <div class="modal-title">👤 เพิ่มรายชื่อใหม่</div>
+    <div class="form-group"><label>ชื่อ</label><input type="text" id="qc-name" placeholder="เช่น สมชาย, แม่, เพื่อนห้อง"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('quick-contact-modal')">ยกเลิก</button><button class="btn btn-primary" style="width:auto" onclick="confirmQuickAddContact()">+ เพิ่ม</button></div>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
-
-<!-- Chart.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-
 <script>
-// ==========================================
-// CONFIG & STATE
-// ==========================================
-const SCRIPT_URL_KEY = 'expense_script_url';
-const WALLETS_KEY = 'expense_wallets';
-const DEFAULT_WALLETS = [
-  'เงินสด (ใช้จ่าย)','เงินสด (เงินเก็บ)','กรุงไทย / KTC',
-  '金融卡 (郵政)','SCB / Planet','EasyCard (บัตรนกสีเขียว)','EasyCard (บัตรนักเรียน)'
-];
+const SCRIPT_URL_KEY='exp_script_url_v2',WALLETS_KEY='exp_wallets_v2',CATEGORIES_KEY='exp_categories_v2',CONTACTS_KEY='exp_contacts_v2';
+const DEFAULT_WALLETS=['เงินสด (ใช้จ่าย)','เงินสด (เงินเก็บ)','กรุงไทย / KTC','金融卡 (郵政)','SCB / Planet','EasyCard (บัตรนกสีเขียว)','EasyCard (บัตรนักเรียน)'];
+const DEFAULT_CATEGORIES=['ของกิน','ของใช้','รายจ่ายจำเป็น','การเดินทาง','จำไม่ได้'];
+const MONTH_TH=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const CAT_COLORS={'ของกิน':'#5a8a5a','ของใช้':'#6baec8','รายจ่ายจำเป็น':'#d4714a','การเดินทาง':'#9878c0','จำไม่ได้':'#a09070'};
+const CAT_PAL=['#5a8a5a','#6baec8','#d4714a','#9878c0','#a09070','#e8a030','#c87878','#78a8c8','#88b870','#c8a878'];
+function catColor(n,i){return CAT_COLORS[n]||CAT_PAL[i%CAT_PAL.length];}
+function getWallets(){try{const s=localStorage.getItem(WALLETS_KEY);if(s)return JSON.parse(s);}catch(e){}return[...DEFAULT_WALLETS];}
+function saveWallets(l){localStorage.setItem(WALLETS_KEY,JSON.stringify(l));}
+function getCategories(){try{const s=localStorage.getItem(CATEGORIES_KEY);if(s)return JSON.parse(s);}catch(e){}return[...DEFAULT_CATEGORIES];}
+function saveCategories(l){localStorage.setItem(CATEGORIES_KEY,JSON.stringify(l));}
+function getContacts(){try{const s=localStorage.getItem(CONTACTS_KEY);if(s)return JSON.parse(s);}catch(e){}return[];}
+function saveContacts(l){localStorage.setItem(CONTACTS_KEY,JSON.stringify(l));}
 
-function getWallets() {
-  try {
-    const saved = localStorage.getItem(WALLETS_KEY);
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return [...DEFAULT_WALLETS];
-}
-
-function saveWallets(list) {
-  localStorage.setItem(WALLETS_KEY, JSON.stringify(list));
-}
-
-// Dynamic alias — always reflects current wallet list
-Object.defineProperty(window, 'WALLETS', { get: getWallets });
-const MONTH_NAMES = [
-  'มกราคม','กุมภาพันธ์','มีนาคม','เมษายน',
-  'พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม',
-  'กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'
-];
-const CAT_COLORS = {
-  'ของกิน': '#7bc97a',
-  'ของใช้': '#7ab8f5',
-  'รายจ่ายจำเป็น': '#f5a07a',
-  'การเดินทาง': '#d07af5',
-  'จำไม่ได้': '#888'
+let state={
+  currentMonth:MONTH_TH[new Date().getMonth()],
+  currentYear:new Date().getFullYear(),
+  selectedType:'รายจ่าย',
+  debtType:'',borrowSub:'',
+  entries:[],debtEntries:[],summary:null,pieChart:null,
+  scriptUrl:localStorage.getItem(SCRIPT_URL_KEY)||''
 };
 
-let state = {
-  currentMonth: MONTH_NAMES[new Date().getMonth()],
-  entries: [],
-  summary: null,
-  pieChart: null,
-  selectedType: '',
-  scriptUrl: localStorage.getItem(SCRIPT_URL_KEY) || ''
-};
-
-// ==========================================
-// INIT
-// ==========================================
-window.onload = async () => {
-  setDefaultDate();
-  buildMonthSelector();
-  populateAllWalletSelects();
-  renderWalletManager();
-  buildOpeningBalanceForm();
-  setType('รายจ่าย', 'expense');
-  document.getElementById('settings-month-label').textContent = state.currentMonth;
-
-  if (!state.scriptUrl) {
-    document.getElementById('onboarding-notice').style.display = 'block';
-    document.getElementById('s-script-url').value = '';
-  } else {
-    document.getElementById('s-script-url').value = state.scriptUrl;
+window.addEventListener('load',async()=>{
+  buildMonthYearSelector();setDefaultDates();
+  switchAddTab('main');setType('รายจ่าย','expense');
+  populateAllWalletSelects();populateCategorySelects();populateContactSelects();
+  renderWalletManager();renderCategoryManager();renderContactManager();renderRecurringList();
+  buildOpeningBalanceForm();updateSettingsMonthLabel();
+  if(state.scriptUrl){
+    document.getElementById('s-script-url').value=state.scriptUrl;
     await loadAllData();
-    await checkFirstTime();
+  } else {
+    document.getElementById('onboarding-banner').style.display='block';
   }
-};
+});
 
-function setDefaultDate() {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('f-date').value = today;
+// ============================================================
+// MONTH-YEAR PICKER
+// ============================================================
+let pickerYear; // ปี ค.ศ. ที่กำลังแสดงใน picker
+
+function buildMonthYearSelector(){
+  const cm=new Date().getMonth(),cy=new Date().getFullYear();
+  state.currentMonth=MONTH_TH[cm];
+  state.currentYear=cy;
+  pickerYear=cy;
+  updatePillDisplay();
 }
 
-function buildMonthSelector() {
-  const sel = document.getElementById('monthSelector');
-  sel.innerHTML = '';
-  const cur = new Date().getMonth();
-  MONTH_NAMES.forEach((m, i) => {
-    const opt = document.createElement('option');
-    opt.value = m; opt.textContent = m;
-    if (i === cur) opt.selected = true;
-    sel.appendChild(opt);
+function updatePillDisplay(){
+  const short=state.currentMonth.length>7?state.currentMonth.slice(0,3)+'.':state.currentMonth;
+  document.getElementById('pill-display').textContent=`${short} ${state.currentYear+543}`;
+}
+
+function toggleMonthPicker(){
+  const pill=document.querySelector('.month-pill');
+  const picker=document.getElementById('month-picker');
+  const isOpen=picker.classList.contains('open');
+  if(isOpen){picker.classList.remove('open');pill.classList.remove('open');}
+  else{pickerYear=state.currentYear;renderPickerGrid();picker.classList.add('open');pill.classList.add('open');}
+}
+
+function pickerChangeYear(delta){
+  pickerYear+=delta;
+  renderPickerGrid();
+}
+
+function renderPickerGrid(){
+  document.getElementById('picker-year-label').textContent='พ.ศ. '+(pickerYear+543);
+  const grid=document.getElementById('picker-months-grid');
+  const now=new Date();const curMonth=now.getMonth();const curYear=now.getFullYear();
+  const MONTH_SHORT=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  grid.innerHTML=MONTH_TH.map((m,i)=>{
+    const isCurrent=(pickerYear===curYear&&i===curMonth);
+    const isSelected=(pickerYear===state.currentYear&&m===state.currentMonth);
+    return `<button class="picker-month${isCurrent?' current':''}${isSelected?' selected':''}" onclick="pickMonth(${i})">${MONTH_SHORT[i]}</button>`;
+  }).join('');
+}
+
+function pickMonth(monthIdx){
+  state.currentMonth=MONTH_TH[monthIdx];
+  state.currentYear=pickerYear;
+  updatePillDisplay();
+  updateSettingsMonthLabel();
+  // close picker
+  document.getElementById('month-picker').classList.remove('open');
+  document.querySelector('.month-pill').classList.remove('open');
+  loadAllData();
+}
+
+// ปิด picker เมื่อคลิกข้างนอก
+document.addEventListener('click',e=>{
+  const pill=document.querySelector('.month-pill');
+  const picker=document.getElementById('month-picker');
+  if(pill&&picker&&!pill.contains(e.target)){picker.classList.remove('open');pill.classList.remove('open');}
+});
+
+function setDefaultDates(){
+  const td=new Date().toISOString().split('T')[0];
+  ['f-date','t-date','db-date','pd-date','ln-date','rp-date','fg-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
+}
+function updateSettingsMonthLabel(){document.getElementById('settings-month-label').textContent=`${state.currentMonth} ${state.currentYear+543}`;}
+async function onMonthChange(){
+  updateSettingsMonthLabel();await loadAllData();
+}
+
+function calcPreview(iId,pId){
+  const raw=document.getElementById(iId).value.trim();
+  const preview=document.getElementById(pId);
+  if(!raw){preview.textContent='';return;}
+  if(!/^[\d\s\+\-\*\/\(\)\.]+$/.test(raw)){preview.textContent='';return;}
+  try{const r=Function('"use strict";return('+raw+')')();
+    if(typeof r==='number'&&isFinite(r)&&r!==parseFloat(raw)){preview.textContent='= '+r.toLocaleString('th-TH',{maximumFractionDigits:2});preview.style.color='var(--leaf-green)';}
+    else preview.textContent='';}catch(e){preview.textContent='';}
+}
+function resolveAmount(iId){
+  const raw=document.getElementById(iId).value.trim();if(!raw)return null;
+  if(!/^[\d\s\+\-\*\/\(\)\.]+$/.test(raw))return parseFloat(raw)||null;
+  try{const r=Function('"use strict";return('+raw+')')();return(typeof r==='number'&&isFinite(r))?r:null;}catch(e){return null;}
+}
+
+function populateAllWalletSelects(){
+  const w=getWallets(),opts=w.map(x=>`<option>${x}</option>`).join('');
+  ['f-wallet','f-wallet-from','f-wallet-to','db-wallet','pd-wallet','ln-wallet','rp-wallet','fg-wallet','e-wallet','e-wallet-from','e-wallet-to'].forEach(id=>{
+    const el=document.getElementById(id);if(!el||el.tagName!=='SELECT')return;
+    const ph=id.endsWith('-from')||id.endsWith('-to')?'— เลือก —':'— เลือกช่องเงิน —';
+    el.innerHTML=`<option value="">${ph}</option>${opts}`;
   });
+  const fw=document.getElementById('filter-wallet');
+  if(fw)fw.innerHTML=`<option value="">ทุกช่องเงิน</option>${opts}`;
+}
+function populateCategorySelects(){
+  const cats=getCategories(),opts=cats.map(c=>`<option>${c}</option>`).join('');
+  const fCat=document.getElementById('f-category'),fgCat=document.getElementById('fg-category');
+  const eCat=document.getElementById('e-category'),fcf=document.getElementById('filter-category');
+  if(fCat)fCat.innerHTML=`<option value="">— เลือกหมวดหมู่ —</option>${opts}`;
+  if(fgCat)fgCat.innerHTML=`<option value="">— เลือกหมวดหมู่ —</option>${opts}`;
+  if(eCat)eCat.innerHTML=`<option value="">—</option>${opts}`;
+  if(fcf)fcf.innerHTML=`<option value="">ทุกหมวดหมู่</option>${opts}`;
+}
+function populateContactSelects(){
+  const contacts=getContacts(),opts=contacts.map(c=>`<option>${c}</option>`).join('');
+  ['db-contact','ln-contact'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=`<option value="">— เลือกชื่อ —</option>${opts}`;});
+  const fp=document.getElementById('filter-debt-person');
+  if(fp)fp.innerHTML=`<option value="">ทุกคน</option>${opts}`;
 }
 
-// Populate all wallet <select> elements from current wallet list
-function populateAllWalletSelects() {
-  const wallets = getWallets();
-  const opts = wallets.map(w => `<option>${w}</option>`).join('');
-
-  const fWallet = document.getElementById('f-wallet');
-  const fFrom   = document.getElementById('f-wallet-from');
-  const fTo     = document.getElementById('f-wallet-to');
-  const eWallet = document.getElementById('e-wallet');
-  const fWalletFilter = document.getElementById('filter-wallet');
-
-  if (fWallet) fWallet.innerHTML = `<option value="">-- เลือกช่องเงิน --</option>${opts}`;
-  if (fFrom)   fFrom.innerHTML   = `<option value="">-- เลือก --</option>${opts}`;
-  if (fTo)     fTo.innerHTML     = `<option value="">-- เลือก --</option>${opts}`;
-  if (eWallet) eWallet.innerHTML = `<option value="">--</option>${opts}`;
-  if (fWalletFilter) fWalletFilter.innerHTML = `<option value="">ทุกช่องเงิน</option>${opts}`;
+function showPage(pageId,idx){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  if(pageId==='page-overview')renderOverview();
+  if(pageId==='page-entries'){populateAllWalletSelects();renderEntries();renderDebtLedger();}
+  if(pageId==='page-settings'){renderWalletManager();renderCategoryManager();renderContactManager();buildOpeningBalanceForm();renderRecurringList();}
+  if(pageId==='page-year')renderYearOverview();
 }
 
-function buildOpeningBalanceForm() {
-  const container = document.getElementById('opening-balance-form');
-  const wallets = getWallets();
-  container.innerHTML = wallets.map(w => `
-    <div class="form-group">
-      <label>${w}</label>
-      <input type="number" id="ob-${CSS.escape(w)}" placeholder="0.00" min="0" step="0.01">
-    </div>
-  `).join('');
-}
-
-// ==========================================
-// WALLET MANAGER
-// ==========================================
-function renderWalletManager() {
-  const wallets = getWallets();
-  const list = document.getElementById('wallet-manager-list');
-  if (!list) return;
-
-  list.innerHTML = wallets.map((w, i) => `
-    <div class="wallet-manager-item" id="wm-item-${i}">
-      <span class="wm-drag-handle" title="ลาก">⠿</span>
-      <span class="wm-icon">🏦</span>
-      <span class="wm-name" id="wm-name-${i}">${w}</span>
-      <button class="btn-icon" onclick="editWalletName(${i})" title="แก้ไขชื่อ">✏️</button>
-      <button class="btn-icon del" onclick="deleteWallet(${i})" title="ลบ">🗑️</button>
-    </div>
-  `).join('');
-}
-
-function addWallet() {
-  const input = document.getElementById('new-wallet-input');
-  const name = input.value.trim();
-  if (!name) { showToast('กรุณากรอกชื่อช่องเงิน', 'error'); return; }
-
-  const wallets = getWallets();
-  if (wallets.includes(name)) { showToast('มีช่องเงินนี้อยู่แล้ว', 'error'); return; }
-
-  wallets.push(name);
-  saveWallets(wallets);
-  input.value = '';
-  renderWalletManager();
-  populateAllWalletSelects();
-  buildOpeningBalanceForm();
-  showToast(`✅ เพิ่ม "${name}" เรียบร้อย`, 'success');
-}
-
-function deleteWallet(index) {
-  const wallets = getWallets();
-  const name = wallets[index];
-  if (!confirm(`ต้องการลบ "${name}" ออกจากเมนูใช่ไหม?\n\n(ข้อมูลเก่าใน Sheet ไม่หาย)`)) return;
-  wallets.splice(index, 1);
-  saveWallets(wallets);
-  renderWalletManager();
-  populateAllWalletSelects();
-  buildOpeningBalanceForm();
-  showToast(`🗑️ ลบ "${name}" เรียบร้อย`, 'success');
-}
-
-function editWalletName(index) {
-  const wallets = getWallets();
-  const item = document.getElementById(`wm-item-${index}`);
-  const nameSpan = document.getElementById(`wm-name-${index}`);
-  const oldName = wallets[index];
-
-  // Replace name span with input
-  const input = document.createElement('input');
-  input.className = 'wm-edit';
-  input.value = oldName;
-  nameSpan.replaceWith(input);
-  input.focus(); input.select();
-
-  // Replace edit button with save button
-  const editBtn = item.querySelector('.btn-icon:not(.del)');
-  editBtn.textContent = '💾';
-  editBtn.onclick = () => saveWalletName(index, input, oldName);
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') saveWalletName(index, input, oldName);
-    if (e.key === 'Escape') renderWalletManager();
+function switchAddTab(tab){
+  ['main','transfer','debt','forget'].forEach(t=>{
+    document.getElementById('atab-'+t).className='add-tab';
+    document.getElementById('dsec-'+t).classList.remove('active');
   });
+  const classMap={main:'active-main',transfer:'active-transfer',debt:'active-debt',forget:'active-forget'};
+  document.getElementById('atab-'+tab).classList.add(classMap[tab]);
+  document.getElementById('dsec-'+tab).classList.add('active');
 }
 
-function saveWalletName(index, input, oldName) {
-  const newName = input.value.trim();
-  if (!newName) { showToast('ชื่อต้องไม่ว่าง', 'error'); return; }
-  const wallets = getWallets();
-  if (wallets.includes(newName) && newName !== oldName) { showToast('มีชื่อนี้อยู่แล้ว', 'error'); return; }
-  wallets[index] = newName;
-  saveWallets(wallets);
-  renderWalletManager();
-  populateAllWalletSelects();
-  buildOpeningBalanceForm();
-  showToast(`✅ เปลี่ยนชื่อเป็น "${newName}" เรียบร้อย`, 'success');
+function setType(type,cls){
+  state.selectedType=type;
+  document.querySelectorAll('#dsec-main .type-btn').forEach(b=>b.className='type-btn');
+  const btn=document.getElementById('tb-'+cls);if(btn)btn.classList.add('t-'+cls);
+  document.getElementById('category-row').style.display=type==='รายจ่าย'?'':'none';
 }
 
-
-async function checkFirstTime() {
-  const result = await apiCall('getSettings');
-  if (!result || !result.success) return;
-  const settings = result.settings;
-  const hasBalance = getWallets().some(w => settings[`opening_${state.currentMonth}_${w}`]);
-  if (!hasBalance) {
-    document.getElementById('onboarding-notice').style.display = 'block';
-  }
+function setDebtType(dt){
+  state.debtType=dt;
+  ['borrow','paydebt','lend','repay'].forEach(t=>{
+    document.getElementById('dtb-'+t).className='debt-type-btn';
+    document.getElementById('dform-'+t).classList.remove('active');
+  });
+  const cm={borrow:'sel-borrow',paydebt:'sel-paydebt',lend:'sel-lend',repay:'sel-repay'};
+  document.getElementById('dtb-'+dt).classList.add(cm[dt]);
+  document.getElementById('dform-'+dt).classList.add('active');
+  if(dt==='paydebt')populateDebtSelect('pd');
+  if(dt==='repay')populateDebtSelect('rp');
+}
+function setBorrowSub(sub){
+  state.borrowSub=sub;
+  document.getElementById('bsub-instant').className='borrow-sub-btn'+(sub==='instant'?' sel':'');
+  document.getElementById('bsub-cash').className='borrow-sub-btn'+(sub==='cash'?' sel':'');
+  document.getElementById('db-wallet-row').style.display=sub==='cash'?'':'none';
 }
 
-// ==========================================
-// API
-// ==========================================
-function apiCall(action, data = {}) {
-  const url = state.scriptUrl;
-  if (!url) { showToast('กรุณากรอก Script URL ก่อน', 'error'); return Promise.resolve(null); }
+function populateDebtSelect(prefix){
+  const isPaydebt=prefix==='pd';
+  const targetTypes=isPaydebt?['ยืมเงินมา(ออกแทน)','ยืมเงินมา(เก็บไว้)']:['ให้ยืมเงิน'];
+  const selId=isPaydebt?'pd-debt-select':'rp-lend-select';
+  const sel=document.getElementById(selId);if(!sel)return;
+  const open=state.debtEntries.filter(e=>targetTypes.includes(e.type)&&(e.remaining??e.amount)>0.001);
+  sel.innerHTML=`<option value="">— เลือกรายการ —</option>`+
+    open.map(e=>`<option value="${e.id}">${e.contact||'?'} · ${e.name} · เหลือ ${formatMoney(e.remaining??e.amount)}</option>`).join('');
+  document.getElementById(prefix+'-remaining').textContent='';
+}
+function onDebtSelectChange(prefix){
+  const selId=prefix==='pd'?'pd-debt-select':'rp-lend-select';
+  const id=document.getElementById(selId).value;
+  const entry=state.debtEntries.find(e=>e.id===id);
+  const rem=document.getElementById(prefix+'-remaining');
+  if(!entry){rem.textContent='';return;}
+  const r=entry.remaining??entry.amount;
+  rem.textContent='ยังค้างอยู่: '+formatMoney(r);
+  rem.className='debt-remaining'+(r<0.01?' paid':'');
+  const amtEl=document.getElementById(prefix+'-amount');
+  if(amtEl)amtEl.value=r;
+}
 
-  return new Promise((resolve) => {
-    const cbName = 'cb_' + Date.now();
-    const params = new URLSearchParams({ action, data: JSON.stringify(data), callback: cbName });
-    const script = document.createElement('script');
-    script.src = `${url}?${params}`;
-
-    window[cbName] = (result) => {
-      resolve(result);
-      document.body.removeChild(script);
-      delete window[cbName];
-    };
-
-    script.onerror = () => {
-      resolve(null);
-      if (document.body.contains(script)) document.body.removeChild(script);
-      delete window[cbName];
-    };
-
+function apiCall(action,data={}){
+  const url=state.scriptUrl;
+  if(!url){showToast('กรุณากรอก Script URL ก่อนนะคะ','error');return Promise.resolve(null);}
+  return new Promise(resolve=>{
+    const cb='cb_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const params=new URLSearchParams({action,data:JSON.stringify(data),callback:cb});
+    const script=document.createElement('script');script.src=`${url}?${params}`;
+    window[cb]=result=>{resolve(result);document.body.contains(script)&&document.body.removeChild(script);delete window[cb];};
+    script.onerror=()=>{resolve(null);document.body.contains(script)&&document.body.removeChild(script);delete window[cb];};
     document.body.appendChild(script);
   });
 }
 
-// ==========================================
-// LOAD DATA
-// ==========================================
-async function loadAllData() {
-  await Promise.all([loadEntries(), loadSummary()]);
+async function loadAllData(){
+  await Promise.all([loadEntries(),loadSummary(),loadDebtEntries()]);
+  renderRecentPreview();
+}
+async function loadEntries(){
+  const r=await apiCall('getEntries',{month:state.currentMonth,year:state.currentYear});
+  if(r&&r.success){state.entries=r.entries||[];renderEntries();}
+}
+async function loadSummary(){
+  const r=await apiCall('getMonthSummary',{month:state.currentMonth,year:state.currentYear,wallets:getWallets()});
+  if(r&&r.success){state.summary=r;renderOverview();}
+}
+async function loadDebtEntries(){
+  const r=await apiCall('getAllDebtEntries',{});
+  if(r&&r.success){state.debtEntries=r.entries||[];renderDebtLedger();updateDebtTotals();}
 }
 
-async function loadEntries() {
-  const result = await apiCall('getEntries', { month: state.currentMonth });
-  if (result && result.success) {
-    state.entries = result.entries || [];
-    renderEntries();
-  }
+async function submitMainEntry(){
+  const date=document.getElementById('f-date').value,name=document.getElementById('f-name').value.trim();
+  const amount=resolveAmount('f-amount'),wallet=document.getElementById('f-wallet').value;
+  const category=document.getElementById('f-category').value,note=document.getElementById('f-note').value.trim();
+  if(!date||!name||!amount||amount<=0){showToast('กรุณากรอกข้อมูลให้ครบค่ะ','error');return;}
+  if(!wallet){showToast('กรุณาเลือกช่องเงิน','error');return;}
+  const r=await apiCall('addEntry',{date,name,amount,type:state.selectedType,wallet,category,note,year:state.currentYear});
+  if(r&&r.success){showToast('✅ บันทึกเรียบร้อยค่ะ!','success');['f-amount','f-name','f-note'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-cp').textContent='';await loadAllData();}
+  else showToast('เกิดข้อผิดพลาด ตรวจสอบ Script URL ด้วยนะคะ','error');
+}
+async function submitTransferEntry(){
+  const date=document.getElementById('t-date').value,name=document.getElementById('t-name').value.trim();
+  const amount=resolveAmount('t-amount'),from=document.getElementById('f-wallet-from').value,to=document.getElementById('f-wallet-to').value;
+  const note=document.getElementById('t-note').value.trim();
+  if(!date||!name||!amount||amount<=0){showToast('กรุณากรอกข้อมูลให้ครบค่ะ','error');return;}
+  if(!from||!to){showToast('กรุณาเลือกช่องต้นทางและปลายทาง','error');return;}
+  if(from===to){showToast('ช่องต้นทางและปลายทางต้องไม่เหมือนกัน','error');return;}
+  const r=await apiCall('addEntry',{date,name,amount,type:'ย้ายเงิน',walletFrom:from,walletTo:to,note,year:state.currentYear});
+  if(r&&r.success){showToast('✅ บันทึกการย้ายเงินเรียบร้อยค่ะ!','success');['t-amount','t-name','t-note'].forEach(id=>document.getElementById(id).value='');document.getElementById('t-cp').textContent='';await loadAllData();}
+  else showToast('เกิดข้อผิดพลาด','error');
+}
+async function submitBorrowEntry(){
+  if(!state.borrowSub){showToast('กรุณาเลือกประเภทการยืมก่อนนะคะ','error');return;}
+  const date=document.getElementById('db-date').value,name=document.getElementById('db-name').value.trim();
+  const amount=resolveAmount('db-amount'),contact=document.getElementById('db-contact').value;
+  const wallet=state.borrowSub==='cash'?document.getElementById('db-wallet').value:'';
+  const note=document.getElementById('db-note').value.trim();
+  if(!date||!name||!amount||amount<=0){showToast('กรุณากรอกข้อมูลให้ครบค่ะ','error');return;}
+  if(!contact){showToast('กรุณาเลือกชื่อคนที่ยืมมาค่ะ','error');return;}
+  if(state.borrowSub==='cash'&&!wallet){showToast('กรุณาเลือกช่องเงินที่รับมาค่ะ','error');return;}
+  const type=state.borrowSub==='instant'?'ยืมเงินมา(ออกแทน)':'ยืมเงินมา(เก็บไว้)';
+  const r=await apiCall('addDebtEntry',{date,name,amount,type,contact,wallet,note,remaining:amount,year:state.currentYear});
+  if(r&&r.success){showToast('✅ บันทึกการยืมจาก '+contact+' เรียบร้อยค่ะ!','success');['db-amount','db-name','db-note'].forEach(id=>document.getElementById(id).value='');document.getElementById('db-cp').textContent='';await loadAllData();}
+  else showToast('เกิดข้อผิดพลาด','error');
+}
+async function submitPaydebtEntry(){
+  const debtId=document.getElementById('pd-debt-select').value,date=document.getElementById('pd-date').value;
+  const amount=resolveAmount('pd-amount'),wallet=document.getElementById('pd-wallet').value;
+  const note=document.getElementById('pd-note').value.trim();
+  if(!debtId){showToast('กรุณาเลือกรายการหนี้ที่จะชำระค่ะ','error');return;}
+  if(!date||!amount||amount<=0){showToast('กรุณากรอกวันที่และจำนวนเงิน','error');return;}
+  if(!wallet){showToast('กรุณาเลือกช่องเงินที่จ่ายออก','error');return;}
+  // กันชำระเกินยอด
+  const entry=state.debtEntries.find(e=>e.id===debtId);
+  if(entry){const rem=entry.remaining??entry.amount;if(amount>rem){showToast('จำนวนที่ชำระเกินยอดคงค้าง ('+formatMoney(rem)+') ค่ะ','error');return;}}
+  const r=await apiCall('addPayment',{debtId,date,amount,wallet,note,paymentType:'paydebt',year:state.currentYear});
+  if(r&&r.success){
+    const msg=r.remaining<0.01?'✅ ชำระหนี้ครบแล้วค่ะ! 🎉':'✅ ชำระ '+formatMoney(r.paid)+' เรียบร้อย (เหลือ '+formatMoney(r.remaining)+')';
+    showToast(msg,'success');document.getElementById('pd-amount').value='';document.getElementById('pd-cp').textContent='';await loadAllData();
+  } else showToast('เกิดข้อผิดพลาด','error');
+}
+async function submitLendEntry(){
+  const date=document.getElementById('ln-date').value,name=document.getElementById('ln-name').value.trim();
+  const amount=resolveAmount('ln-amount'),contact=document.getElementById('ln-contact').value;
+  const wallet=document.getElementById('ln-wallet').value,note=document.getElementById('ln-note').value.trim();
+  if(!date||!name||!amount||amount<=0){showToast('กรุณากรอกข้อมูลให้ครบค่ะ','error');return;}
+  if(!contact){showToast('กรุณาเลือกชื่อคนที่ให้ยืมค่ะ','error');return;}
+  if(!wallet){showToast('กรุณาเลือกช่องเงินที่จ่ายออก','error');return;}
+  const r=await apiCall('addDebtEntry',{date,name,amount,type:'ให้ยืมเงิน',contact,wallet,note,remaining:amount,year:state.currentYear});
+  if(r&&r.success){showToast('✅ บันทึกการให้ '+contact+' ยืมเรียบร้อยค่ะ!','success');['ln-amount','ln-name','ln-note'].forEach(id=>document.getElementById(id).value='');document.getElementById('ln-cp').textContent='';await loadAllData();}
+  else showToast('เกิดข้อผิดพลาด','error');
+}
+async function submitRepayEntry(){
+  const lendId=document.getElementById('rp-lend-select').value,date=document.getElementById('rp-date').value;
+  const amount=resolveAmount('rp-amount'),wallet=document.getElementById('rp-wallet').value;
+  const note=document.getElementById('rp-note').value.trim();
+  if(!lendId){showToast('กรุณาเลือกรายการที่ให้ยืมค่ะ','error');return;}
+  if(!date||!amount||amount<=0){showToast('กรุณากรอกวันที่และจำนวนเงิน','error');return;}
+  if(!wallet){showToast('กรุณาเลือกช่องเงินที่รับเข้า','error');return;}
+  // กันรับเงินเกินยอด
+  const entry=state.debtEntries.find(e=>e.id===lendId);
+  if(entry){const rem=entry.remaining??entry.amount;if(amount>rem){showToast('จำนวนที่รับเกินยอดคงค้าง ('+formatMoney(rem)+') ค่ะ','error');return;}}
+  const r=await apiCall('addPayment',{debtId:lendId,date,amount,wallet,note,paymentType:'repay',year:state.currentYear});
+  if(r&&r.success){
+    const msg=r.remaining<0.01?'✅ รับเงินคืนครบแล้วค่ะ! 🎉':'✅ รับ '+formatMoney(r.paid)+' เรียบร้อย (เหลือ '+formatMoney(r.remaining)+')';
+    showToast(msg,'success');document.getElementById('rp-amount').value='';document.getElementById('rp-cp').textContent='';await loadAllData();
+  } else showToast('เกิดข้อผิดพลาด','error');
+}
+async function submitForgetEntry(){
+  const date=document.getElementById('fg-date').value,name=document.getElementById('fg-name').value.trim()||'ไม่ทราบรายการ';
+  const amount=resolveAmount('fg-amount'),wallet=document.getElementById('fg-wallet').value;
+  const category=document.getElementById('fg-category').value,note=document.getElementById('fg-note').value.trim();
+  if(!date||!amount||amount<=0){showToast('กรุณากรอกวันที่และจำนวนเงิน','error');return;}
+  if(!wallet){showToast('กรุณาเลือกช่องเงิน','error');return;}
+  const r=await apiCall('addEntry',{date,name,amount,type:'จำไม่ได้',wallet,category,note,year:state.currentYear});
+  if(r&&r.success){showToast('✅ บันทึกเรียบร้อยค่ะ!','success');['fg-amount','fg-name','fg-note'].forEach(id=>document.getElementById(id).value='');document.getElementById('fg-cp').textContent='';await loadAllData();}
+  else showToast('เกิดข้อผิดพลาด','error');
 }
 
-async function loadSummary() {
-  const result = await apiCall('getMonthSummary', { month: state.currentMonth });
-  if (result && result.success) {
-    state.summary = result;
-    renderOverview();
-  }
-}
+function renderRecentPreview(){
+  const container=document.getElementById('recent-entries-preview');
 
-// ==========================================
-// PAGE NAVIGATION
-// ==========================================
-function showPage(pageId) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(pageId).classList.add('active');
-  const pages = ['page-add','page-overview','page-entries','page-settings'];
-  const idx = pages.indexOf(pageId);
-  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  // รวมรายการปกติ + debt entries แล้วเรียงตามวันที่ล่าสุด
+  const normalItems=state.entries.map(e=>({...e,_src:'normal'}));
+  const debtItems=state.debtEntries.map(e=>({...e,_src:'debt'}));
+  const all=[...normalItems,...debtItems]
+    .sort((a,b)=>new Date(b.date)-new Date(a.date)).slice(0,6);
 
-  if (pageId === 'page-overview') renderOverview();
-  if (pageId === 'page-entries') { populateAllWalletSelects(); renderEntries(); }
-  if (pageId === 'page-settings') { renderWalletManager(); buildOpeningBalanceForm(); }
-}
+  if(!all.length){container.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">ยังไม่มีรายการ</div></div>';return;}
 
-async function onMonthChange() {
-  state.currentMonth = document.getElementById('monthSelector').value;
-  document.getElementById('settings-month-label').textContent = state.currentMonth;
-  await loadAllData();
-}
-
-// ==========================================
-// FORM LOGIC
-// ==========================================
-function setType(type, cls) {
-  state.selectedType = type;
-  document.querySelectorAll('.type-btn').forEach(b => b.className = 'type-btn');
-  document.getElementById(`tb-${cls}`).classList.add(`active-${cls}`);
-
-  const isTransfer = (type === 'ย้ายเงิน');
-  const showCat = (type === 'รายจ่าย' || type === 'จำไม่ได้');
-  document.getElementById('wallet-normal-row').style.display = isTransfer ? 'none' : '';
-  document.getElementById('wallet-transfer-row').style.display = isTransfer ? 'grid' : 'none';
-  document.getElementById('wallet-transfer-row').className = `transfer-row${isTransfer ? ' visible' : ''}`;
-  document.getElementById('category-row').style.display = showCat ? '' : 'none';
-}
-
-async function submitEntry() {
-  if (!state.selectedType) { showToast('กรุณาเลือกประเภทรายการ', 'error'); return; }
-  const date   = document.getElementById('f-date').value;
-  const amount = document.getElementById('f-amount').value;
-  const name   = document.getElementById('f-name').value;
-  if (!date || !amount || !name) { showToast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
-
-  const isTransfer = (state.selectedType === 'ย้ายเงิน');
-  const wallet     = isTransfer ? '' : document.getElementById('f-wallet').value;
-  const walletFrom = isTransfer ? document.getElementById('f-wallet-from').value : '';
-  const walletTo   = isTransfer ? document.getElementById('f-wallet-to').value : '';
-
-  if (isTransfer && (!walletFrom || !walletTo)) { showToast('กรุณาเลือกช่องต้นทางและปลายทาง', 'error'); return; }
-  if (!isTransfer && !wallet) { showToast('กรุณาเลือกช่องเงิน', 'error'); return; }
-
-  const data = {
-    date, amount, name,
-    type: state.selectedType,
-    category: document.getElementById('f-category').value,
-    wallet, walletFrom, walletTo,
-    note: document.getElementById('f-note').value
+  const typeInfo={
+    'รายรับ':    {cls:'b-income',   sign:'+',  amt:'pos'},
+    'รายจ่าย':   {cls:'b-expense',  sign:'-',  amt:'neg'},
+    'ย้ายเงิน':  {cls:'b-transfer', sign:'⇄',  amt:'neutral'},
+    'จำไม่ได้':  {cls:'b-forget',   sign:'-',  amt:'neg'},
+    'ยืมเงินมา(ออกแทน)': {cls:'b-expense',sign:'📋',amt:'neutral'},
+    'ยืมเงินมา(เก็บไว้)': {cls:'b-income', sign:'+', amt:'pos'},
+    'ให้ยืมเงิน':  {cls:'b-expense', sign:'-', amt:'neg'},
+    'ชำระหนี้':    {cls:'b-expense', sign:'-', amt:'neg'},
+    'รับเงินคืน':  {cls:'b-income',  sign:'+', amt:'pos'},
   };
 
-  const result = await apiCall('addEntry', data);
-  if (result && result.success) {
-    showToast('✅ บันทึกเรียบร้อย!', 'success');
-    document.getElementById('f-amount').value = '';
-    document.getElementById('f-name').value = '';
-    document.getElementById('f-note').value = '';
-    await loadAllData();
-  } else {
-    showToast('เกิดข้อผิดพลาด กรุณาตรวจสอบ Script URL', 'error');
-  }
-}
-
-// ==========================================
-// RENDER: OVERVIEW
-// ==========================================
-function renderOverview() {
-  if (!state.summary) return;
-  const s = state.summary;
-
-  // Totals
-  document.getElementById('total-balance').textContent = formatMoney(s.totalBalance);
-  document.getElementById('total-expense').textContent = formatMoney(s.totalExpense);
-
-  // Wallet cards
-  const grid = document.getElementById('wallet-grid');
-  grid.innerHTML = getWallets().map(w => {
-    const info = s.walletSummary[w] || { balance:0, income:0, expense:0 };
-    const cls = info.balance >= 0 ? 'positive' : 'negative';
-    return `
-      <div class="wallet-card">
-        <div class="wallet-name">${w}</div>
-        <div class="wallet-balance ${cls}">${formatMoney(info.balance)}</div>
-        <div class="wallet-sub">
-          <span class="wallet-in">↑ ${formatMoney(info.income)}</span>
-          <span class="wallet-out">↓ ${formatMoney(info.expense)}</span>
-        </div>
-      </div>
-    `;
+  container.innerHTML=all.map(e=>{
+    const info=typeInfo[e.type]||{cls:'',sign:'',amt:'neutral'};
+    const isTr=e.type==='ย้ายเงิน';
+    const w=isTr?`${e.walletFrom||'?'}→${e.walletTo||'?'}`:(e.wallet||'-');
+    const person=e.contact?` · ${e.contact}`:'';
+    const amtCls=info.amt==='pos'?'amt-pos':info.amt==='neg'?'amt-neg':'amt-neutral';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--cream-dark)">
+      <span class="type-badge ${info.cls}" style="font-size:9px">${e.type}</span>
+      <span style="flex:1;font-size:13px">${e.name}${person}</span>
+      <span style="font-size:11px;color:var(--ink-light)">${w}</span>
+      <span class="${amtCls}" style="font-size:13px;font-weight:700;white-space:nowrap">${info.sign}${formatMoney(Math.abs(e.amount))}</span>
+    </div>`;
   }).join('');
-
-  // Pie chart
-  renderPieChart(s.categoryTotals);
 }
 
-function renderPieChart(cats) {
-  const labels = Object.keys(cats).filter(k => cats[k] > 0);
-  const values = labels.map(k => cats[k]);
-  const colors = labels.map(k => CAT_COLORS[k] || '#888');
-  const total  = values.reduce((a,b) => a+b, 0);
+function renderOverview(){
+  const s=state.summary;if(!s)return;
+  document.getElementById('total-balance').textContent=formatMoney(s.totalBalance);
+  document.getElementById('total-expense').textContent=formatMoney(s.totalExpense);
+  const wallets=getWallets();
+  document.getElementById('wallet-grid').innerHTML=wallets.map(w=>{
+    const info=s.walletSummary?(s.walletSummary[w]||{balance:0,income:0,expense:0}):{balance:0,income:0,expense:0};
+    return `<div class="wallet-card"><div class="wallet-name">${w}</div><div class="wallet-balance ${info.balance>=0?'pos':'neg'}">${formatMoney(info.balance)}</div><div class="wallet-flow"><span class="wf-in">↑${formatMoney(info.income)}</span><span class="wf-out">↓${formatMoney(info.expense)}</span></div></div>`;
+  }).join('');
+  renderPieChart(s.categoryTotals||{});
+}
+function renderPieChart(cats){
+  const labels=Object.keys(cats).filter(k=>cats[k]>0);
+  const values=labels.map(k=>cats[k]);
+  const colors=labels.map((k,i)=>catColor(k,i));
+  const total=values.reduce((a,b)=>a+b,0);
+  const legend=document.getElementById('chart-legend');
+  if(!total){legend.innerHTML='<p style="color:var(--ink-pale);font-size:13px">ยังไม่มีข้อมูลค่าใช้จ่าย</p>';}
+  else legend.innerHTML=labels.map((l,i)=>`<div class="legend-row"><div class="legend-dot" style="background:${colors[i]}"></div><span class="legend-name">${l}</span><div><div class="legend-pct">${((values[i]/total)*100).toFixed(1)}%</div><div class="legend-amt">${formatMoney(values[i])}</div></div></div>`).join('');
+  const canvas=document.getElementById('pieChart');
+  if(state.pieChart){state.pieChart.destroy();state.pieChart=null;}
+  if(!total){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,180,180);ctx.strokeStyle='#e8e0c8';ctx.lineWidth=18;ctx.beginPath();ctx.arc(90,90,68,0,Math.PI*2);ctx.stroke();return;}
+  state.pieChart=new Chart(canvas,{type:'doughnut',data:{labels,datasets:[{data:values,backgroundColor:colors,borderWidth:0,hoverOffset:8}]},options:{responsive:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${formatMoney(ctx.raw)}`}}},cutout:'68%'}});
+}
+function updateDebtTotals(){
+  const entries=state.debtEntries;
+  const totalOwe=entries.filter(e=>['ยืมเงินมา(ออกแทน)','ยืมเงินมา(เก็บไว้)'].includes(e.type)&&(e.remaining??e.amount)>0.001).reduce((s,e)=>s+(e.remaining??e.amount),0);
+  const totalLent=entries.filter(e=>e.type==='ให้ยืมเงิน'&&(e.remaining??e.amount)>0.001).reduce((s,e)=>s+(e.remaining??e.amount),0);
+  const oe=document.getElementById('total-owe');if(oe)oe.textContent=formatMoney(totalOwe);
+  const le=document.getElementById('total-lent');if(le)le.textContent=formatMoney(totalLent);
+}
 
-  // Legend
-  const legend = document.getElementById('chart-legend');
-  if (total === 0) {
-    legend.innerHTML = '<p style="color:var(--text-muted);font-size:13px">ยังไม่มีข้อมูลค่าใช้จ่าย</p>';
-  } else {
-    legend.innerHTML = labels.map((l, i) => `
-      <div class="legend-item">
-        <div class="legend-dot" style="background:${colors[i]}"></div>
-        <span class="legend-label">${l}</span>
-        <div>
-          <div class="legend-pct">${((values[i]/total)*100).toFixed(1)}%</div>
-          <div class="legend-amt">${formatMoney(values[i])}</div>
-        </div>
-      </div>
-    `).join('');
-  }
+function switchEntriesTab(tab){
+  document.querySelectorAll('.etab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.etab-panel').forEach(p=>p.classList.remove('active'));
+  const tabs=document.querySelectorAll('.etab');
+  tabs[tab==='normal'?0:1].classList.add('active');
+  document.getElementById('etpanel-'+tab).classList.add('active');
+}
+function renderEntries(){
+  const typeF=document.getElementById('filter-type')?.value||'';
+  const walletF=document.getElementById('filter-wallet')?.value||'';
+  const catF=document.getElementById('filter-category')?.value||'';
+  const search=document.getElementById('filter-search')?.value.toLowerCase()||'';
+  let entries=state.entries.filter(e=>{
+    if(typeF&&e.type!==typeF)return false;
+    if(walletF&&e.wallet!==walletF&&e.walletFrom!==walletF&&e.walletTo!==walletF)return false;
+    if(catF&&e.category!==catF)return false;
+    if(search&&!e.name.toLowerCase().includes(search)&&!(e.note||'').toLowerCase().includes(search))return false;
+    return true;
+  }).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const container=document.getElementById('entries-container');
+  if(!entries.length){container.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">ไม่พบรายการ</div></div>';return;}
+  const bm={'รายรับ':'income','รายจ่าย':'expense','ย้ายเงิน':'transfer','จำไม่ได้':'forget'};
+  container.innerHTML='<table class="entries-table"><thead><tr><th>วันที่</th><th>รายการ</th><th>ประเภท</th><th>ช่องเงิน</th><th>จำนวน</th><th></th></tr></thead><tbody>'+
+    entries.map(e=>{
+      const isIn=e.type==='รายรับ',isTr=e.type==='ย้ายเงิน';
+      const cls=isIn?'amt-pos':isTr?'amt-neutral':'amt-neg';
+      const sign=isIn?'+':isTr?'⇄':'-';
+      const w=isTr?`${e.walletFrom||'?'}→${e.walletTo||'?'}`:(e.wallet||'-');
+      return `<tr><td>${formatDateTH(e.date)}</td><td>${e.name}${e.note?`<br><small style="color:var(--ink-pale)">${e.note}</small>`:''}</td><td><span class="type-badge b-${bm[e.type]||''}">${e.type}</span></td><td style="font-size:11px;color:var(--ink-light)">${w}</td><td class="${cls}">${sign}${formatMoney(Math.abs(e.amount))}</td><td><div class="action-col"><button class="btn-icon" onclick='openEdit(${JSON.stringify(e)})'>✏️</button><button class="btn-icon del" onclick="deleteEntry('${e.id}')">🗑️</button></div></td></tr>`;
+    }).join('')+'</tbody></table>';
+}
 
-  // Chart
-  const canvas = document.getElementById('pieChart');
-  if (state.pieChart) { state.pieChart.destroy(); }
+function renderDebtLedger(){
+  const container=document.getElementById('debt-ledger-container');if(!container)return;
+  const filterType=document.getElementById('filter-debt-type')?.value||'';
+  const filterPerson=document.getElementById('filter-debt-person')?.value||'';
+  const entries=state.debtEntries;
+  if(!entries.length){container.innerHTML='<div class="empty-state"><div class="empty-icon">🤝</div><div class="empty-text">ยังไม่มีรายการหนี้สิน</div></div>';return;}
+  const persons=[...new Set(entries.map(e=>e.contact||'ไม่ระบุ'))].sort();
+  let html='';
+  persons.forEach(person=>{
+    if(filterPerson&&person!==filterPerson)return;
+    const pEntries=entries.filter(e=>(e.contact||'ไม่ระบุ')===person);
+    const oweList=pEntries.filter(e=>['ยืมเงินมา(ออกแทน)','ยืมเงินมา(เก็บไว้)'].includes(e.type));
+    const lentList=pEntries.filter(e=>e.type==='ให้ยืมเงิน');
+    const totalOwe=oweList.reduce((s,e)=>s+(e.remaining??e.amount),0);
+    const totalLent=lentList.reduce((s,e)=>s+(e.remaining??e.amount),0);
+    if(filterType==='owe'&&totalOwe<0.001)return;
+    if(filterType==='lent'&&totalLent<0.001)return;
+    if(filterType==='done'&&(totalOwe>0.001||totalLent>0.001))return;
 
-  if (total === 0) {
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0,0,200,200);
-    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-    ctx.lineWidth = 20;
-    ctx.beginPath(); ctx.arc(100,100,75,0,Math.PI*2); ctx.stroke();
-    return;
-  }
-
-  state.pieChart = new Chart(canvas, {
-    type: 'doughnut',
-    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 0, hoverOffset: 8 }] },
-    options: {
-      responsive: false,
-      plugins: { legend: { display: false }, tooltip: {
-        callbacks: {
-          label: ctx => ` ${ctx.label}: ${formatMoney(ctx.raw)} (${((ctx.raw/total)*100).toFixed(1)}%)`
-        }
-      }},
-      cutout: '70%'
+    if(oweList.length){
+      html+=`<div class="debt-ledger-card"><div class="dlc-header"><span style="font-size:20px">🤝</span><div class="dlc-person">เราค้าง ${person}</div><div class="dlc-total ${totalOwe>0.001?'owe':'done'}">${formatMoney(totalOwe)}</div></div><div class="dlc-items">`+
+        oweList.map(e=>{
+          const rem=e.remaining??e.amount;
+          const isInstant=e.type.includes('ออกแทน');
+          const paid=e.amount-(e.remaining??e.amount);
+          return `<div class="dlc-item"><span class="dlc-badge dlb-borrow">${isInstant?'ออกแทน':'ยืมเก็บ'}</span><div class="dlc-item-name">${e.name}<div class="dlc-item-remaining">${rem<0.01?'✅ ชำระครบแล้ว':'ค้าง '+formatMoney(rem)}${paid>0.01?' (ชำระแล้ว '+formatMoney(paid)+')':''}</div></div><div style="text-align:right;display:flex;align-items:center;gap:6px"><div><div style="font-size:13px;font-weight:700;color:var(--terracotta)">${formatMoney(e.amount)}</div><div class="dlc-item-date">${formatDateTH(e.date)}</div></div><button class="btn-icon del" onclick="deleteDebtEntry('${e.id}')" title="ลบรายการ" style="flex-shrink:0">🗑️</button></div></div>`;
+        }).join('')+'</div></div>';
+    }
+    if(lentList.length){
+      html+=`<div class="debt-ledger-card"><div class="dlc-header"><span style="font-size:20px">💵</span><div class="dlc-person">${person} ค้างเรา</div><div class="dlc-total ${totalLent>0.001?'lent':'done'}">${formatMoney(totalLent)}</div></div><div class="dlc-items">`+
+        lentList.map(e=>{
+          const rem=e.remaining??e.amount;
+          const paid=e.amount-(e.remaining??e.amount);
+          return `<div class="dlc-item"><span class="dlc-badge dlb-lend">ให้ยืม</span><div class="dlc-item-name">${e.name}<div class="dlc-item-remaining">${rem<0.01?'✅ คืนครบแล้ว':'ค้าง '+formatMoney(rem)}${paid>0.01?' (รับคืนแล้ว '+formatMoney(paid)+')':''}</div></div><div style="text-align:right;display:flex;align-items:center;gap:6px"><div><div style="font-size:13px;font-weight:700;color:var(--lend-color)">${formatMoney(e.amount)}</div><div class="dlc-item-date">${formatDateTH(e.date)}</div></div><button class="btn-icon del" onclick="deleteDebtEntry('${e.id}')" title="ลบรายการ" style="flex-shrink:0">🗑️</button></div></div>`;
+        }).join('')+'</div></div>';
     }
   });
+  container.innerHTML=html||'<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">ไม่พบรายการตามเงื่อนไข</div></div>';
 }
 
-// ==========================================
-// RENDER: ENTRIES TABLE
-// ==========================================
-function renderEntries() {
-  const typeFilter   = document.getElementById('filter-type')?.value || '';
-  const walletFilter = document.getElementById('filter-wallet')?.value || '';
-  const search       = document.getElementById('filter-search')?.value.toLowerCase() || '';
-
-  let entries = state.entries.filter(e => {
-    if (typeFilter && e.type !== typeFilter) return false;
-    if (walletFilter && e.wallet !== walletFilter && e.walletFrom !== walletFilter && e.walletTo !== walletFilter) return false;
-    if (search && !e.name.toLowerCase().includes(search) && !e.note?.toLowerCase().includes(search)) return false;
-    return true;
-  });
-
-  entries = entries.slice().sort((a,b) => new Date(b.date) - new Date(a.date));
-
-  const container = document.getElementById('entries-container');
-
-  if (entries.length === 0) {
-    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">ไม่มีรายการ</div></div>`;
-    return;
-  }
-
-  const badgeMap = {
-    'รายรับ':'income','รายจ่าย':'expense','ย้ายเงิน':'transfer',
-    'ยืมเงิน':'borrow','ชำระหนี้':'paydebt','จำไม่ได้':'forget'
-  };
-
-  const rows = entries.map(e => {
-    const cls = badgeMap[e.type] || '';
-    const isIncome = (e.type === 'รายรับ' || e.type === 'ยืมเงิน');
-    const amtCls = isIncome ? 'amount-positive' : 'amount-negative';
-    const amtSign = isIncome ? '+' : '-';
-    const walletDisplay = e.type === 'ย้ายเงิน'
-      ? `${e.walletFrom || '?'} → ${e.walletTo || '?'}`
-      : (e.wallet || '-');
-    return `<tr>
-      <td>${formatDate(e.date)}</td>
-      <td>${e.name}<br><small style="color:var(--text-muted)">${e.note||''}</small></td>
-      <td><span class="type-badge badge-${cls}">${e.type}</span></td>
-      <td style="font-size:12px;color:var(--text-muted)">${walletDisplay}</td>
-      <td class="${amtCls}">${amtSign}${formatMoney(Math.abs(e.amount))}</td>
-      <td>
-        <div class="action-btns">
-          <button class="btn-icon" onclick='openEdit(${JSON.stringify(e)})' title="แก้ไข">✏️</button>
-          <button class="btn-icon del" onclick="deleteEntry('${e.id}')" title="ลบ">🗑️</button>
-        </div>
-      </td>
-    </tr>`;
+async function renderYearOverview(){
+  const year=state.currentYear;
+  document.getElementById('year-overview-label').textContent='ปี '+(year+543);
+  const grid=document.getElementById('year-grid');
+  grid.innerHTML='<div class="loading-state"><div class="spinner"></div> กำลังโหลด…</div>';
+  const wallets=getWallets();
+  const results=await Promise.all(MONTH_TH.map(m=>apiCall('getMonthSummary',{month:m,year,wallets})));
+  grid.innerHTML=MONTH_TH.map((m,i)=>{
+    const r=results[i];
+    if(!r||!r.success||(r.totalBalance===0&&r.totalExpense===0))return`<div class="month-tile"><div class="mt-name">${m}</div><div class="mt-balance" style="color:var(--ink-pale);font-size:14px">—</div><div class="mt-empty">ไม่มีข้อมูล</div></div>`;
+    return`<div class="month-tile has-data"><div class="mt-name">${m}</div><div class="mt-balance">${formatMoney(r.totalBalance)}</div><div class="mt-expense">ใช้จ่าย ${formatMoney(r.totalExpense)}</div></div>`;
   }).join('');
-
-  container.innerHTML = `
-    <table class="entries-table">
-      <thead><tr>
-        <th>วันที่</th><th>รายการ</th><th>ประเภท</th><th>ช่องเงิน</th><th>จำนวน</th><th></th>
-      </tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
 }
 
-// ==========================================
-// EDIT / DELETE
-// ==========================================
-function openEdit(entry) {
-  document.getElementById('e-id').value    = entry.id;
-  document.getElementById('e-date').value  = entry.date;
-  document.getElementById('e-amount').value= entry.amount;
-  document.getElementById('e-name').value  = entry.name;
-  document.getElementById('e-type').value  = entry.type;
-  document.getElementById('e-wallet').value= entry.wallet || '';
-  document.getElementById('e-category').value = entry.category || '';
-  document.getElementById('e-note').value  = entry.note || '';
+function openEdit(entry){
+  document.getElementById('e-id').value=entry.id;
+  document.getElementById('e-orig-type').value=entry.type;
+  document.getElementById('e-date').value=entry.date;
+  document.getElementById('e-amount').value=entry.amount;
+  document.getElementById('e-name').value=entry.name;
+  document.getElementById('e-type').value=entry.type;
+  document.getElementById('e-note').value=entry.note||'';
+  document.getElementById('e-cp').textContent='';
+  populateAllWalletSelects();populateCategorySelects();
+  onEditTypeChange();
+  if(entry.type==='ย้ายเงิน'){document.getElementById('e-wallet-from').value=entry.walletFrom||'';document.getElementById('e-wallet-to').value=entry.walletTo||'';}
+  else{document.getElementById('e-wallet').value=entry.wallet||'';document.getElementById('e-category').value=entry.category||'';}
   document.getElementById('edit-modal').classList.add('open');
 }
-
-function closeModal() {
-  document.getElementById('edit-modal').classList.remove('open');
+function onEditTypeChange(){
+  const type=document.getElementById('e-type').value,isTr=type==='ย้ายเงิน';
+  const showCat=['รายจ่าย','จำไม่ได้'].includes(type);
+  document.getElementById('e-wallet-normal').style.display=isTr?'none':'';
+  const tf=document.getElementById('e-transfer-fields');tf.style.display=isTr?'grid':'none';tf.className='e-transfer-fields'+(isTr?' show':'');
+  document.getElementById('e-category-row').style.display=showCat?'':'none';
+}
+async function submitEdit(){
+  const amount=resolveAmount('e-amount');if(amount===null){showToast('จำนวนเงินไม่ถูกต้อง','error');return;}
+  const type=document.getElementById('e-type').value,isTr=type==='ย้ายเงิน';
+  const data={id:document.getElementById('e-id').value,date:document.getElementById('e-date').value,amount,name:document.getElementById('e-name').value,type,
+    wallet:isTr?'':document.getElementById('e-wallet').value,
+    walletFrom:isTr?document.getElementById('e-wallet-from').value:'',
+    walletTo:isTr?document.getElementById('e-wallet-to').value:'',
+    category:document.getElementById('e-category').value,
+    note:document.getElementById('e-note').value,year:state.currentYear};
+  const r=await apiCall('updateEntry',data);
+  if(r&&r.success){showToast('✅ แก้ไขเรียบร้อยค่ะ','success');closeModal('edit-modal');await loadAllData();}
+  else showToast('เกิดข้อผิดพลาด','error');
+}
+async function deleteEntry(id){
+  if(!confirm('ต้องการลบรายการนี้ใช่ไหม?'))return;
+  const r=await apiCall('deleteEntry',{id});
+  if(r&&r.success){showToast('🗑️ ลบเรียบร้อยแล้ว','success');await loadAllData();}
+  else showToast('เกิดข้อผิดพลาด','error');
 }
 
-async function submitEdit() {
-  const data = {
-    id:       document.getElementById('e-id').value,
-    date:     document.getElementById('e-date').value,
-    amount:   document.getElementById('e-amount').value,
-    name:     document.getElementById('e-name').value,
-    type:     document.getElementById('e-type').value,
-    wallet:   document.getElementById('e-wallet').value,
-    category: document.getElementById('e-category').value,
-    note:     document.getElementById('e-note').value,
-  };
-  const result = await apiCall('updateEntry', data);
-  if (result && result.success) {
-    showToast('✅ แก้ไขเรียบร้อย', 'success');
-    closeModal();
-    await loadAllData();
-  } else {
-    showToast('เกิดข้อผิดพลาด', 'error');
-  }
+async function openCloseMonthModal(){
+  const s=state.summary;if(!s||!s.walletSummary){showToast('กำลังโหลดข้อมูล กรุณารอสักครู่','info');return;}
+  const ni=(MONTH_TH.indexOf(state.currentMonth)+1)%12,ny=ni===0?state.currentYear+1:state.currentYear;
+  document.getElementById('cm-month-name').textContent=`${state.currentMonth} ${state.currentYear+543}`;
+  document.getElementById('cm-next-month-name').textContent=`${MONTH_TH[ni]} ${ny+543}`;
+  document.getElementById('cm-preview-body').innerHTML=getWallets().map(w=>{
+    const info=s.walletSummary[w]||{balance:0};
+    return`<tr><td>${w}</td><td style="font-weight:700;color:${info.balance>=0?'var(--forest)':'var(--terracotta)'}">${formatMoney(info.balance)}</td></tr>`;
+  }).join('');
+  document.getElementById('close-month-modal').classList.add('open');
 }
-
-async function deleteEntry(id) {
-  if (!confirm('ต้องการลบรายการนี้ใช่ไหม?')) return;
-  const result = await apiCall('deleteEntry', { id });
-  if (result && result.success) {
-    showToast('🗑️ ลบเรียบร้อย', 'success');
-    await loadAllData();
-  } else {
-    showToast('เกิดข้อผิดพลาด', 'error');
-  }
+async function confirmCloseMonth(){
+  closeModal('close-month-modal');
+  const r=await apiCall('closeMonth',{month:state.currentMonth,year:state.currentYear,wallets:getWallets()});
+  if(r&&r.success)showToast('✅ ปิดเดือน '+state.currentMonth+' เรียบร้อยค่ะ','success');
+  else showToast('เกิดข้อผิดพลาด','error');
 }
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
-// ==========================================
-// SETTINGS
-// ==========================================
-function saveScriptUrl() {
-  const url = document.getElementById('s-script-url').value.trim();
-  if (!url) { showToast('กรุณากรอก URL', 'error'); return; }
-  state.scriptUrl = url;
-  localStorage.setItem(SCRIPT_URL_KEY, url);
-  showToast('✅ บันทึก URL เรียบร้อย', 'success');
-  document.getElementById('onboarding-notice').style.display = 'none';
+function saveScriptUrl(){
+  const url=document.getElementById('s-script-url').value.trim();
+  if(!url){showToast('กรุณากรอก URL ก่อนนะคะ','error');return;}
+  state.scriptUrl=url;localStorage.setItem(SCRIPT_URL_KEY,url);
+  showToast('✅ บันทึก URL เรียบร้อยค่ะ','success');
+  document.getElementById('onboarding-banner').style.display='none';
   loadAllData();
 }
-
-async function saveOpeningBalances() {
-  const data = {};
-  getWallets().forEach(w => {
-    const el = document.getElementById(`ob-${CSS.escape(w)}`);
-    const val = el?.value;
-    if (val) data[`opening_${state.currentMonth}_${w}`] = parseFloat(val);
-  });
-  const result = await apiCall('saveSettings', data);
-  if (result && result.success) {
-    showToast('✅ บันทึกยอดตั้งต้นเรียบร้อย', 'success');
-    document.getElementById('onboarding-notice').style.display = 'none';
-    await loadSummary();
-  } else {
-    showToast('เกิดข้อผิดพลาด', 'error');
-  }
+async function saveOpeningBalances(){
+  const data={};
+  getWallets().forEach(w=>{const el=document.getElementById('ob-'+CSS.escape(w));const val=el?.value;if(val)data[`opening_${state.currentMonth}_${state.currentYear}_${w}`]=parseFloat(val);});
+  const r=await apiCall('saveSettings',data);
+  if(r&&r.success){showToast('✅ บันทึกยอดตั้งต้นเรียบร้อยค่ะ','success');document.getElementById('onboarding-banner').style.display='none';await loadSummary();}
+  else showToast('เกิดข้อผิดพลาด','error');
+}
+function buildOpeningBalanceForm(){
+  document.getElementById('opening-balance-form').innerHTML=getWallets().map(w=>`<div class="form-group"><label>${w}</label><input type="number" id="ob-${CSS.escape(w)}" placeholder="0.00" min="0" step="0.01"></div>`).join('');
 }
 
-async function closeMonth() {
-  if (!confirm(`ต้องการปิดเดือน ${state.currentMonth} และนำยอดไปเป็นเงินต้นเดือนถัดไปใช่ไหม?`)) return;
-  const result = await apiCall('closeMonth', { month: state.currentMonth });
-  if (result && result.success) {
-    showToast(`✅ ปิดเดือน ${state.currentMonth} เรียบร้อย → ${result.nextMonth}`, 'success');
-    buildMonthSelector();
-  } else {
-    showToast('เกิดข้อผิดพลาด', 'error');
-  }
+// WALLET MANAGER
+function renderWalletManager(){
+  const wallets=getWallets(),list=document.getElementById('wallet-manager-list');if(!list)return;
+  list.innerHTML=wallets.map((w,i)=>`<div class="wallet-manager-item" id="wm-item-${i}" draggable="true" ondragstart="dragStart(event,${i},'wm')" ondragover="dragOver(event)" ondrop="dragDrop(event,${i},'wm')"><span class="wm-drag">⠿</span><span>🏦</span><span class="wm-name" id="wm-name-${i}">${w}</span><button class="btn-icon" onclick="editWalletName(${i})">✏️</button><button class="btn-icon del" onclick="deleteWallet(${i})">🗑️</button></div>`).join('');
+}
+const dragSrc={};
+function dragStart(e,i,ns){dragSrc[ns]=i;e.dataTransfer.effectAllowed='move';}
+function dragOver(e){e.preventDefault();}
+function dragDrop(e,i,ns){
+  e.preventDefault();const src=dragSrc[ns];if(src===undefined||src===i)return;
+  const getF={wm:getWallets,cat:getCategories,cm:getContacts};
+  const saveF={wm:saveWallets,cat:saveCategories,cm:saveContacts};
+  const renderF={wm:renderWalletManager,cat:renderCategoryManager,cm:renderContactManager};
+  const list=getF[ns]();const item=list.splice(src,1)[0];list.splice(i,0,item);saveF[ns](list);dragSrc[ns]=undefined;renderF[ns]();
+  populateAllWalletSelects();populateCategorySelects();populateContactSelects();buildOpeningBalanceForm();
+}
+function addWallet(){
+  const input=document.getElementById('new-wallet-input'),name=input.value.trim();
+  if(!name){showToast('กรุณากรอกชื่อช่องเงิน','error');return;}
+  const wallets=getWallets();if(wallets.includes(name)){showToast('มีช่องเงินนี้อยู่แล้วค่ะ','error');return;}
+  wallets.push(name);saveWallets(wallets);input.value='';renderWalletManager();populateAllWalletSelects();buildOpeningBalanceForm();
+  showToast('✅ เพิ่ม "'+name+'" เรียบร้อยค่ะ','success');
+}
+function deleteWallet(i){
+  const wallets=getWallets(),name=wallets[i];
+  if(!confirm('ต้องการลบ "'+name+'" ออกจากเมนูใช่ไหม?'))return;
+  wallets.splice(i,1);saveWallets(wallets);renderWalletManager();populateAllWalletSelects();buildOpeningBalanceForm();
+  showToast('🗑️ ลบ "'+name+'" เรียบร้อยค่ะ','success');
+}
+function editWalletName(i){
+  const wallets=getWallets(),item=document.getElementById('wm-item-'+i),nameSpan=document.getElementById('wm-name-'+i),old=wallets[i];
+  const input=document.createElement('input');input.className='wm-edit-input';input.value=old;nameSpan.replaceWith(input);input.focus();input.select();
+  const btn=item.querySelector('.btn-icon:not(.del)');btn.textContent='💾';btn.onclick=()=>saveWalletName(i,input,old);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')saveWalletName(i,input,old);if(e.key==='Escape')renderWalletManager();});
+}
+function saveWalletName(i,input,old){
+  const n=input.value.trim();if(!n){showToast('ชื่อต้องไม่ว่างนะคะ','error');return;}
+  const wallets=getWallets();if(wallets.includes(n)&&n!==old){showToast('มีชื่อนี้อยู่แล้วค่ะ','error');return;}
+  wallets[i]=n;saveWallets(wallets);renderWalletManager();populateAllWalletSelects();buildOpeningBalanceForm();
+  showToast('✅ เปลี่ยนชื่อเป็น "'+n+'" เรียบร้อยค่ะ','success');
 }
 
-// ==========================================
-// UTILS
-// ==========================================
-function formatMoney(n) {
-  if (n === undefined || n === null) return '฿0';
-  return '฿' + Number(n).toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+// CATEGORY MANAGER
+function renderCategoryManager(){
+  const cats=getCategories(),list=document.getElementById('cat-manager-list');if(!list)return;
+  list.innerHTML=cats.map((c,i)=>`<div class="cat-manager-item" id="cat-item-${i}" draggable="true" ondragstart="dragStart(event,${i},'cat')" ondragover="dragOver(event)" ondrop="dragDrop(event,${i},'cat')"><span class="cat-drag">⠿</span><span style="color:${catColor(c,i)}">🏷️</span><span class="cat-name" id="cat-name-${i}">${c}</span><button class="btn-icon" onclick="editCategoryName(${i})">✏️</button><button class="btn-icon del" onclick="deleteCategory(${i})">🗑️</button></div>`).join('');
+}
+function addCategory(){
+  const input=document.getElementById('new-cat-input'),name=input.value.trim();
+  if(!name){showToast('กรุณากรอกชื่อหมวดหมู่','error');return;}
+  const cats=getCategories();if(cats.includes(name)){showToast('มีหมวดหมู่นี้อยู่แล้วค่ะ','error');return;}
+  cats.push(name);saveCategories(cats);input.value='';renderCategoryManager();populateCategorySelects();
+  showToast('✅ เพิ่มหมวดหมู่ "'+name+'" เรียบร้อยค่ะ','success');
+}
+function deleteCategory(i){
+  const cats=getCategories(),name=cats[i];
+  if(!confirm('ต้องการลบหมวดหมู่ "'+name+'" ออกจากเมนูใช่ไหม?'))return;
+  cats.splice(i,1);saveCategories(cats);renderCategoryManager();populateCategorySelects();
+  showToast('🗑️ ลบ "'+name+'" เรียบร้อยค่ะ','success');
+}
+function editCategoryName(i){
+  const cats=getCategories(),item=document.getElementById('cat-item-'+i),nameSpan=document.getElementById('cat-name-'+i),old=cats[i];
+  const input=document.createElement('input');input.className='cat-edit-input';input.value=old;nameSpan.replaceWith(input);input.focus();input.select();
+  const btn=item.querySelector('.btn-icon:not(.del)');btn.textContent='💾';btn.onclick=()=>saveCategoryName(i,input,old);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')saveCategoryName(i,input,old);if(e.key==='Escape')renderCategoryManager();});
+}
+function saveCategoryName(i,input,old){
+  const n=input.value.trim();if(!n){showToast('ชื่อต้องไม่ว่างนะคะ','error');return;}
+  const cats=getCategories();if(cats.includes(n)&&n!==old){showToast('มีชื่อนี้อยู่แล้วค่ะ','error');return;}
+  cats[i]=n;saveCategories(cats);renderCategoryManager();populateCategorySelects();
+  showToast('✅ เปลี่ยนชื่อเป็น "'+n+'" เรียบร้อยค่ะ','success');
 }
 
-function formatDate(d) {
-  if (!d) return '-';
-  const date = new Date(d);
-  return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()+543}`;
+// CONTACT MANAGER
+function renderContactManager(){
+  const contacts=getContacts(),list=document.getElementById('contact-manager-list');if(!list)return;
+  if(!contacts.length){list.innerHTML='<div style="font-size:12px;color:var(--ink-pale);padding:8px 0">ยังไม่มีรายชื่อ กดเพิ่มด้านล่างได้เลยค่ะ</div>';return;}
+  list.innerHTML=contacts.map((c,i)=>`<div class="contact-manager-item" id="cm-item-${i}" draggable="true" ondragstart="dragStart(event,${i},'cm')" ondragover="dragOver(event)" ondrop="dragDrop(event,${i},'cm')"><span class="cm-drag">⠿</span><span>👤</span><span class="cm-name" id="cm-name-${i}">${c}</span><button class="btn-icon" onclick="editContactName(${i})">✏️</button><button class="btn-icon del" onclick="deleteContact(${i})">🗑️</button></div>`).join('');
+}
+function addContact(){
+  const input=document.getElementById('new-contact-input'),name=input.value.trim();
+  if(!name){showToast('กรุณากรอกชื่อก่อนนะคะ','error');return;}
+  const contacts=getContacts();if(contacts.includes(name)){showToast('มีชื่อนี้อยู่แล้วค่ะ','error');return;}
+  contacts.push(name);saveContacts(contacts);input.value='';renderContactManager();populateContactSelects();
+  showToast('✅ เพิ่ม "'+name+'" เรียบร้อยค่ะ','success');
+}
+function deleteContact(i){
+  const contacts=getContacts(),name=contacts[i];
+  if(!confirm('ต้องการลบ "'+name+'" ออกจากรายชื่อใช่ไหม?'))return;
+  contacts.splice(i,1);saveContacts(contacts);renderContactManager();populateContactSelects();
+  showToast('🗑️ ลบ "'+name+'" เรียบร้อยค่ะ','success');
+}
+function editContactName(i){
+  const contacts=getContacts(),item=document.getElementById('cm-item-'+i),nameSpan=document.getElementById('cm-name-'+i),old=contacts[i];
+  const input=document.createElement('input');input.className='cm-edit-input';input.value=old;nameSpan.replaceWith(input);input.focus();input.select();
+  const btn=item.querySelector('.btn-icon:not(.del)');btn.textContent='💾';btn.onclick=()=>saveContactName(i,input,old);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')saveContactName(i,input,old);if(e.key==='Escape')renderContactManager();});
+}
+function saveContactName(i,input,old){
+  const n=input.value.trim();if(!n){showToast('ชื่อต้องไม่ว่างนะคะ','error');return;}
+  const contacts=getContacts();if(contacts.includes(n)&&n!==old){showToast('มีชื่อนี้อยู่แล้วค่ะ','error');return;}
+  contacts[i]=n;saveContacts(contacts);renderContactManager();populateContactSelects();
+  showToast('✅ เปลี่ยนชื่อเป็น "'+n+'" เรียบร้อยค่ะ','success');
+}
+function quickAddContact(){document.getElementById('qc-name').value='';document.getElementById('quick-contact-modal').classList.add('open');}
+function confirmQuickAddContact(){
+  const name=document.getElementById('qc-name').value.trim();
+  if(!name){showToast('กรุณากรอกชื่อก่อนนะคะ','error');return;}
+  const contacts=getContacts();if(!contacts.includes(name)){contacts.push(name);saveContacts(contacts);}
+  renderContactManager();populateContactSelects();
+  ['db-contact','ln-contact'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=name;});
+  closeModal('quick-contact-modal');
+  showToast('✅ เพิ่ม "'+name+'" เรียบร้อยค่ะ','success');
 }
 
+function formatMoney(n){if(n===undefined||n===null)return'฿0';return'฿'+Number(n).toLocaleString('th-TH',{minimumFractionDigits:0,maximumFractionDigits:2});}
+function formatDateTH(d){if(!d)return'-';const p=String(d).split(/[-T]/);return`${parseInt(p[2])}/${parseInt(p[1])}/${parseInt(p[0])+543}`;}
 let toastTimer;
-function showToast(msg, type = 'success') {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.className = `toast ${type} show`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => { el.classList.remove('show'); }, 3000);
+
+
+// ============================================================
+// DELETE DEBT ENTRY
+// ============================================================
+async function deleteDebtEntry(id){
+  if(!confirm('ต้องการลบรายการหนี้นี้ใช่ไหม?\n\n⚠️ การลบจะไม่ย้อนกลับเงินที่บวก/หักไปแล้วในบัญชี\nหากต้องการแก้ไขยอดเงิน ให้ไปแก้ไขรายการในหน้ารายรับ-รายจ่ายด้วยนะคะ'))return;
+  const r=await apiCall('deleteDebtEntry',{id});
+  if(r&&r.success){showToast('🗑️ ลบรายการหนี้เรียบร้อยค่ะ','success');await loadAllData();}
+  else showToast('เกิดข้อผิดพลาด','error');
 }
 
-// Close modal on outside click
-document.getElementById('edit-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+// ============================================================
+// RECURRING ENTRIES (เก็บใน localStorage)
+// ============================================================
+const RECURRING_KEY='exp_recurring_v2';
+function getRecurrings(){try{const s=localStorage.getItem(RECURRING_KEY);if(s)return JSON.parse(s);}catch(e){}return[];}
+function saveRecurrings(l){localStorage.setItem(RECURRING_KEY,JSON.stringify(l));}
+
+function renderRecurringList(){
+  const list=getRecurrings(),container=document.getElementById('recurring-list');if(!container)return;
+  if(!list.length){container.innerHTML='<div style="font-size:12px;color:var(--ink-pale);padding:8px 0">ยังไม่มีรายการประจำ</div>';return;}
+  container.innerHTML=list.map((r,i)=>{
+    const isIncome=r.type==='รายรับ';
+    return `<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--cream);border:var(--border);border-radius:var(--radius-md);margin-bottom:8px">
+      <span class="type-badge ${isIncome?'b-income':'b-expense'}" style="font-size:9px">${r.type}</span>
+      <span style="flex:1;font-size:13px">${r.name}</span>
+      <span style="font-size:13px;font-weight:700;color:${isIncome?'var(--forest)':'var(--terracotta)'}">${formatMoney(r.amount)}</span>
+      <button class="btn-icon" onclick="useRecurring(${i})" title="ใช้รายการนี้" style="background:rgba(90,138,90,.1);color:var(--forest)">▶</button>
+      <button class="btn-icon del" onclick="deleteRecurring(${i})" title="ลบ">🗑️</button>
+    </div>`;
+  }).join('');
+}
+function addRecurring(){
+  const name=document.getElementById('rc-name').value.trim();
+  const amount=parseFloat(document.getElementById('rc-amount').value);
+  const type=document.getElementById('rc-type').value;
+  if(!name||!amount||amount<=0){showToast('กรุณากรอกชื่อและจำนวนเงิน','error');return;}
+  const list=getRecurrings();list.push({name,amount,type});saveRecurrings(list);
+  document.getElementById('rc-name').value='';document.getElementById('rc-amount').value='';
+  renderRecurringList();showToast('✅ เพิ่มรายการประจำ "'+name+'" เรียบร้อยค่ะ','success');
+}
+function deleteRecurring(i){
+  const list=getRecurrings();const name=list[i].name;
+  if(!confirm('ต้องการลบรายการประจำ "'+name+'" ใช่ไหม?'))return;
+  list.splice(i,1);saveRecurrings(list);renderRecurringList();
+  showToast('🗑️ ลบรายการประจำ "'+name+'" แล้วค่ะ','success');
+}
+async function useRecurring(i){
+  const list=getRecurrings();const r=list[i];
+  // สลับไปหน้าบันทึก แล้ว fill ข้อมูลให้
+  showPage('page-add',0);switchAddTab('main');
+  setType(r.type,r.type==='รายรับ'?'income':'expense');
+  setDefaultDates();
+  document.getElementById('f-name').value=r.name;
+  document.getElementById('f-amount').value=r.amount;
+  showToast('กรอกข้อมูลจากรายการประจำแล้ว กดบันทึกเลยค่ะ!','info');
+}
+
+// ============================================================
+// EXPORT CSV
+// ============================================================
+function exportCSV(type){
+  let csv='',filename='';
+  if(type==='entries'){
+    csv='วันที่,ชื่อรายการ,ประเภท,หมวดหมู่,ช่องเงิน,จากช่อง,ไปช่อง,จำนวน,หมายเหตุ\n';
+    state.entries.forEach(e=>{
+      csv+=`"${e.date}","${e.name}","${e.type}","${e.category||''}","${e.wallet||''}","${e.walletFrom||''}","${e.walletTo||''}",${e.amount},"${e.note||''}"\n`;
+    });
+    filename=`รายการ_${state.currentMonth}_${state.currentYear+543}.csv`;
+  } else {
+    csv='วันที่,ชื่อรายการ,ประเภท,ชื่อคน,ช่องเงิน,จำนวน,คงเหลือ,หมายเหตุ\n';
+    state.debtEntries.forEach(e=>{
+      csv+=`"${e.date}","${e.name}","${e.type}","${e.contact||''}","${e.wallet||''}",${e.amount},${e.remaining??e.amount},"${e.note||''}"\n`;
+    });
+    filename=`หนี้สิน_ทั้งหมด.csv`;
+  }
+  const BOM='\uFEFF';
+  const blob=new Blob([BOM+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+  showToast('📄 ดาวน์โหลด '+filename+' เรียบร้อยค่ะ','success');
+}
+function showToast(msg,type='success'){
+  const el=document.getElementById('toast');el.textContent=msg;el.className=`toast ${type} show`;
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),3500);
+}
 </script>
 </body>
 </html>
